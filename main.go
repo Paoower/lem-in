@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	var farm []*src.Room
+	var farm src.Farm
 	if src.ArgsValidation() {
 		farm = src.FarmMapping(os.Args[1])
 	}
-	src.DisplayRooms(farm)
+	src.DisplayFarm(farm)
 }

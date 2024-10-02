@@ -18,6 +18,11 @@ type Room struct {
 	links []*Room
 }
 
+type Farm struct {
+	ants int
+	farm []*Room
+}
+
 // Error helping function
 func checkError(e error) {
 	if e != nil {
@@ -77,7 +82,7 @@ func getRoom(name string, rooms []*Room) (*Room, error) {
 			return room, nil
 		}
 	}
-	return nil, errors.New("ERROR: Invalid data format, room not found")
+	return nil, errors.New("ERROR: Room not found")
 }
 
 // Establishes the links between different rooms
@@ -87,20 +92,14 @@ func parseLinks(rooms []*Room, links []string) error {
 
 		// Get the first room
 		r1, e := getRoom(roomNames[0], rooms)
-		if e != nil {
-			return errors.New("ERROR: Room doesn't exist")
-		}
+		checkError(e)
 
 		// Get the second room
 		r2, e := getRoom(roomNames[1], rooms)
-		if e != nil {
-			return errors.New("ERROR: Room doesn't exist")
-		}
+		checkError(e)
 
 		// Case when the room is linked to itself
-		if r1 == r2 {
-			return errors.New("ERROR: Room is linked to itself")
-		}
+		checkError(e)
 
 		// Connect the two rooms
 		r1.links = append(r1.links, r2)
@@ -110,8 +109,14 @@ func parseLinks(rooms []*Room, links []string) error {
 	return nil
 }
 
+// Display the whole farm
+func DisplayFarm(farm Farm) {
+	fmt.Println("Number of ants: ", farm.ants)
+	displayRooms(farm.farm)
+}
+
 // Display all the rooms and their links based on a given slice
-func DisplayRooms(rooms []*Room) {
+func displayRooms(rooms []*Room) {
 	for _, room := range rooms {
 		fmt.Printf("Room: %s \n Links: ", room.name)
 		for _, link := range room.links {
@@ -122,13 +127,17 @@ func DisplayRooms(rooms []*Room) {
 }
 
 // Main function for the mapping of the farm
-func FarmMapping(filepath string) []*Room {
+func FarmMapping(filepath string) Farm {
 	// Log flags
 	log.SetFlags(0)
 
 	// Slice variables
 	rooms := []*Room{}
 	links := []string{}
+
+	// Variables to get the number of ants
+	ants := 0
+	firstline := true
 
 	// Handle file opening
 	file, err := os.Open(filepath)
@@ -140,6 +149,16 @@ func FarmMapping(filepath string) []*Room {
 
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		if firstline {
+			a, e := strconv.Atoi(line)
+			if e != nil {
+				log.Fatal(errors.New("ERROR: Invalid number of ants"))
+			}
+			ants = a
+			firstline = false
+			continue
+		}
 
 		// Skip empty lines
 		if len(line) == 0 {
@@ -173,5 +192,5 @@ func FarmMapping(filepath string) []*Room {
 		log.Fatal(err)
 	}
 
-	return rooms
+	return Farm{ants, rooms}
 }
