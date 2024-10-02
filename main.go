@@ -2,13 +2,14 @@ package main
 
 import (
 	"lem-in/src"
+	"lem-in/src/farm"
 	"os"
 )
 
 func main() {
-	var farm src.Farm
+	var f *farm.Farm = farm.NewFarm()
 	if src.ArgsValidation() {
-		farm = src.FarmMapping(os.Args[1])
+		f.Create(os.Args[1])
 	}
-	src.DisplayFarm(farm)
+	f.Display()
 }
