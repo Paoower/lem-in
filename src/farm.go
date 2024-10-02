@@ -68,8 +68,8 @@ func DisplayRooms(rooms []*Room) {
 	}
 }
 
-// Main function for the mapping of the colony
-func ColonyMapping(filepath string) []*Room {
+// Main function for the mapping of the farm
+func FarmMapping(filepath string) []*Room {
 	rooms := []*Room{}
 	links := []string{}
 	file, err := os.Open(filepath)

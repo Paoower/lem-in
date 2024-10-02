@@ -6,10 +6,9 @@ import (
 )
 
 func main() {
-	var rooms []*src.Room
+	var farm []*src.Room
 	if src.ArgsValidation() {
-		rooms = src.ColonyMapping(os.Args[1])
+		farm = src.FarmMapping(os.Args[1])
 	}
-	src.DisplayRooms(rooms)
-
+	src.DisplayRooms(farm)
 }
