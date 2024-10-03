@@ -1,6 +1,7 @@
 package farm
 
 import (
+	"lem-in/src/path"
 	"lem-in/src/room"
 )
 
@@ -8,6 +9,7 @@ import (
 type Farm struct {
 	Ants  int
 	Rooms []*room.Room
+	Paths []*path.Path
 }
 
 // Constructor
@@ -15,5 +17,6 @@ func NewFarm() *Farm {
 	return &Farm{
 		Ants:  0,
 		Rooms: []*room.Room{},
+		Paths: []*path.Path{},
 	}
 }
