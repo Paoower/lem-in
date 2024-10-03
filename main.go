@@ -11,5 +11,6 @@ func main() {
 	if src.ArgsValidation() {
 		f.Create(os.Args[1])
 	}
-	f.Display()
+
+	f.SolveProblem()
 }

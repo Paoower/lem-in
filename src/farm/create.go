@@ -63,7 +63,7 @@ func (farm *Farm) Create(filepath string) {
 			}
 
 			// Check ants count
-			tools.Check(checkAnts(a))
+			tools.Check(farm.checkAnts(a))
 
 			// Set ants value and skip line
 			farm.Ants = a

@@ -17,7 +17,7 @@ func (farm *Farm) getRoom(name string) (*room.Room, error) {
 }
 
 // Checks if the ants' number is correct
-func checkAnts(ants int) error {
+func (farm *Farm) checkAnts(ants int) error {
 	if ants <= 0 {
 		return errors.New("invalid ants number")
 	}
