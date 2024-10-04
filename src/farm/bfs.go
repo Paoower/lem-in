@@ -6,7 +6,7 @@ import (
 	"lem-in/src/path"
 	"lem-in/src/room"
 	t "lem-in/src/tools"
-	"time"
+	"strings"
 )
 
 func (f *Farm) BFS() {
@@ -86,52 +86,59 @@ func calculatePathCost(p *path.Path) int {
 	return len(p.Route) + unavailableRooms
 }
 
-type ant struct {
-	cr  *room.Room
-	cri int
-	cp  *path.Path
-}
-
 func deleteElement(slice []ant, index int) []ant {
 	return append(slice[:index], slice[index+1:]...)
 }
 
+type ant struct {
+	cr  *room.Room
+	cri int
+	cp  *path.Path
+	n   int
+}
+
 func (f *Farm) ants() {
 	a := make([]ant, f.Ants)
+	for i := range a {
+		a[i].n = i + 1
+	}
 
-	i := 0
-	for len(a) != 0 {
-		ant := &a[i]
+	for len(a) > 0 {
+		moved := false
+		var turnMoves []string
 
-		t.Debug("Checking if ant's current room is nil = start")
-		if ant.cr == nil {
-			ant.cp = f.getShortestPath(f.Paths)
-			ant.cri = 0
-			ant.cr = ant.cp.Route[0]
-			fmt.Println("ant starting ", ant)
-			fmt.Println("using path ", ant.cp)
+		for i := 0; i < len(a); i++ {
+			ant := &a[i]
+			if ant.cr == nil {
+				ant.cp = f.getShortestPath(f.Paths)
+				ant.cri = 0
+				ant.cr = ant.cp.Route[0]
+			}
+
+			if ant.cr.Name == ant.cp.Route[len(ant.cp.Route)-1].Name {
+				fr := ant.cp.Route[len(ant.cp.Route)-1]
+				fr.Occupied = false
+				a = deleteElement(a, i)
+				i--
+				continue
+			}
+
+			nr := ant.cp.Route[ant.cri+1]
+			if !nr.Occupied {
+				ant.cr = nr
+				ant.cri++
+				nr.Occupied = true
+				if ant.cri > 0 {
+					pr := ant.cp.Route[ant.cri-1]
+					pr.Occupied = false
+				}
+				turnMoves = append(turnMoves, fmt.Sprintf("L%d-%s", ant.n, ant.cr.Name))
+				moved = true
+			}
 		}
 
-		time.Sleep(1 * time.Second)
-
-		t.Debug("checking if ant reached end room")
-		if a[i].cr == a[i].cp.Route[len(ant.cp.Route)-1] {
-			fmt.Println("removing ant from slice", ant)
-			a = deleteElement(a, i)
-			continue
-		}
-
-		nr := a[i].cp.Route[ant.cri+1]
-		if !nr.Occupied {
-			t.Debug("moving ant to next room")
-			ant.cr = nr
-			ant.cri++
-			ant.cp.Route[ant.cri+1].Occupied = true
-		}
-		i++
-
-		if i >= len(a) {
-			i = 0
+		if moved {
+			fmt.Println(strings.Join(turnMoves, " "))
 		}
 	}
 }
