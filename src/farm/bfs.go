@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"lem-in/src/path"
 	"lem-in/src/room"
-	"lem-in/src/tools"
+	t "lem-in/src/tools"
+	"time"
 )
 
 func (f *Farm) BFS() {
@@ -62,7 +63,8 @@ func containsRoom(path []*room.Room, room *room.Room) bool {
 	return false
 }
 
-func (f *Farm) getShortestPath(paths []*path.Path) *path.Path {
+func (f *Farm) getShortestPath([]*path.Path) *path.Path {
+	paths := f.Paths
 	if len(paths) == 1 {
 		return paths[0]
 	}
@@ -84,9 +86,53 @@ func calculatePathCost(p *path.Path) int {
 	return len(p.Route) + unavailableRooms
 }
 
-func (f *Farm) ants {
-	for ants > 0 {
-		
+type ant struct {
+	cr  *room.Room
+	cri int
+	cp  *path.Path
+}
+
+func deleteElement(slice []ant, index int) []ant {
+	return append(slice[:index], slice[index+1:]...)
+}
+
+func (f *Farm) ants() {
+	a := make([]ant, f.Ants)
+
+	i := 0
+	for len(a) != 0 {
+		ant := &a[i]
+
+		t.Debug("Checking if ant's current room is nil = start")
+		if ant.cr == nil {
+			ant.cp = f.getShortestPath(f.Paths)
+			ant.cri = 0
+			ant.cr = ant.cp.Route[0]
+			fmt.Println("ant starting ", ant)
+			fmt.Println("using path ", ant.cp)
+		}
+
+		time.Sleep(1 * time.Second)
+
+		t.Debug("checking if ant reached end room")
+		if a[i].cr == a[i].cp.Route[len(ant.cp.Route)-1] {
+			fmt.Println("removing ant from slice", ant)
+			a = deleteElement(a, i)
+			continue
+		}
+
+		nr := a[i].cp.Route[ant.cri+1]
+		if !nr.Occupied {
+			t.Debug("moving ant to next room")
+			ant.cr = nr
+			ant.cri++
+			ant.cp.Route[ant.cri+1].Occupied = true
+		}
+		i++
+
+		if i >= len(a) {
+			i = 0
+		}
 	}
 }
 
@@ -100,9 +146,8 @@ func (f *Farm) SolveProblem() {
 		for _, r := range p.Route {
 			fmt.Print(r.Name, " ")
 		}
-		tools.Ret()
+		t.Ret()
 	}
 
-	p := f.getShortestPath(f.Paths)
-	fmt.Println(p)
+	f.ants()
 }
