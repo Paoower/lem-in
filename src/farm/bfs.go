@@ -19,7 +19,7 @@ func (f *Farm) BFS() {
 	queue := list.New()
 
 	// Add the first path with the first room
-	var firstPath *path.Path = path.NewPath([]*room.Room{start}, 1)
+	firstPath := path.NewPath([]*room.Room{start}, 1)
 	queue.PushBack(firstPath)
 
 	for queue.Len() > 0 {
@@ -30,22 +30,30 @@ func (f *Farm) BFS() {
 		// If we have reached the destination, store the path
 		if currentRoom == end {
 			allPaths = append(allPaths, p)
-			continue
+			// Don't continue here, allow exploration of other paths
 		}
 
 		// Explore each linked room
 		for _, linkedRoom := range currentRoom.Links {
-
 			// Check if the room has already been visited in the current path
 			if containsRoom(p.Route, linkedRoom) {
 				continue
 			}
 
-			// Copy the current path to extend it
-			var newPath *path.Path = path.NewPath(p.Route, len(p.Route)+1)
+			// Create a new path by copying the current one and extending it
+			newRoute := make([]*room.Room, len(p.Route))
+			copy(newRoute, p.Route)
+			newRoute = append(newRoute, linkedRoom)
 
-			// Append the new room to the path and add it to the queue
-			newPath.Route = append(newPath.Route, linkedRoom)
+			// Calculate the number of available rooms in the new path
+			availableRooms := 0
+			for _, room := range newRoute {
+				if !room.Occupied {
+					availableRooms++
+				}
+			}
+
+			newPath := path.NewPath(newRoute, availableRooms)
 			queue.PushBack(newPath)
 		}
 	}
@@ -53,9 +61,9 @@ func (f *Farm) BFS() {
 	f.Paths = allPaths
 }
 
-// Checks if a room is already in the path
-func containsRoom(path []*room.Room, room *room.Room) bool {
-	for _, r := range path {
+// Helper function to check if a room is in a path
+func containsRoom(route []*room.Room, room *room.Room) bool {
+	for _, r := range route {
 		if r == room {
 			return true
 		}
@@ -114,7 +122,12 @@ func (f *Farm) ants() {
 		for i := 0; i < len(a); i++ {
 			ant := &a[i]
 			if ant.cr == nil {
-				ant.cp = f.getShortestPath(f.Paths)
+				p := f.getShortestPath(f.Paths)
+				if p.Route[0].Occupied {
+					fmt.Println("prev ant already in the first room")
+					p = f.getShortestPath(f.Paths[1:])
+				}
+				ant.cp = p
 				fmt.Printf("ant %d choosing path: ", ant.n)
 				fmt.Println(ant.cp)
 				ant.cri = 0
