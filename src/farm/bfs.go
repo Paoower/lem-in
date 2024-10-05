@@ -63,22 +63,26 @@ func containsRoom(path []*room.Room, room *room.Room) bool {
 	return false
 }
 
-func (f *Farm) getShortestPath([]*path.Path) *path.Path {
-	paths := f.Paths
+func (f *Farm) getShortestPath(paths []*path.Path) *path.Path {
+	if len(paths) == 0 {
+		return nil
+	}
 	if len(paths) == 1 {
 		return paths[0]
 	}
 
-	firstPath := paths[0]
-	restOfPaths := paths[1:]
+	shortestPath := paths[0]
+	shortestCost := calculatePathCost(shortestPath)
 
-	shortestFromRest := f.getShortestPath(restOfPaths)
-
-	if calculatePathCost(firstPath) < calculatePathCost(shortestFromRest) {
-		return firstPath
+	for _, path := range paths[1:] {
+		currentCost := calculatePathCost(path)
+		if currentCost < shortestCost {
+			shortestPath = path
+			shortestCost = currentCost
+		}
 	}
 
-	return shortestFromRest
+	return shortestPath
 }
 
 func calculatePathCost(p *path.Path) int {
@@ -111,6 +115,8 @@ func (f *Farm) ants() {
 			ant := &a[i]
 			if ant.cr == nil {
 				ant.cp = f.getShortestPath(f.Paths)
+				fmt.Printf("ant %d choosing path: ", ant.n)
+				fmt.Println(ant.cp)
 				ant.cri = 0
 				ant.cr = ant.cp.Route[0]
 			}
