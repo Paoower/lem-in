@@ -7,10 +7,9 @@ import (
 )
 
 func main() {
-	var f *farm.Farm = farm.NewFarm()
 	if src.ArgsValidation() {
+		var f *farm.Farm = farm.NewFarm()
 		f.Create(os.Args[1])
+		f.SolveProblem()
 	}
-
-	f.SolveProblem()
 }

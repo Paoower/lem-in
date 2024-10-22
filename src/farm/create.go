@@ -90,8 +90,12 @@ func (farm *Farm) Create(filepath string) {
 
 		// Add links
 		if strings.Contains(line, "-") {
-			links = append(links, line)
-			continue
+			if farm.CheckRoomName(line) == nil {
+				links = append(links, line)
+				continue
+			} else {
+				break
+			}
 		}
 
 		// Parse room data
