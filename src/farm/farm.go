@@ -7,10 +7,11 @@ import (
 
 // Farm datatype
 type Farm struct {
-	Ants     int
-	PathsCap int
-	Rooms    []*room.Room
-	Paths    []*path.Path
+	Ants      int
+	PathsCap  int
+	Rooms     []*room.Room
+	Paths     []*path.Path
+	Solutions []*path.Solution
 }
 
 // Constructor
