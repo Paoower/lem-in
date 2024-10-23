@@ -5,10 +5,10 @@ import (
 	"sort"
 )
 
-func (f *Farm) SortPaths() {
+func (f *Farm) sortPathSize() {
 	f.GetPathCap()
-	sort.Slice(f.PathObject.Paths, func(i int, j int) bool {
-		return len(f.PathObject.Paths[i].Rooms) < len(f.PathObject.Paths[j].Rooms)
+	sort.Slice(f.Paths, func(i int, j int) bool {
+		return len(f.Paths[i].Rooms) < len(f.Paths[j].Rooms)
 	})
 }
 
@@ -16,12 +16,12 @@ func (f *Farm) GetPathCap() {
 	var sliceOfStartingRoomsName []string
 	var sliceOfEndingRoomsName []string
 
-	for i := 0; i < len(f.PathObject.Paths); i++ {
-		tempName := f.PathObject.Paths[i].Rooms[0].Name
+	for i := 0; i < len(f.Paths); i++ {
+		tempName := f.Paths[i].Rooms[0].Name
 		if !slices.Contains(sliceOfStartingRoomsName, tempName) {
 			sliceOfStartingRoomsName = append(sliceOfStartingRoomsName, tempName)
 		}
-		tempName = f.PathObject.Paths[i].Rooms[len(f.PathObject.Paths[i].Rooms)-1].Name
+		tempName = f.Paths[i].Rooms[len(f.Paths[i].Rooms)-1].Name
 		if !slices.Contains(sliceOfEndingRoomsName, tempName) {
 			sliceOfEndingRoomsName = append(sliceOfEndingRoomsName, tempName)
 		}
@@ -30,7 +30,12 @@ func (f *Farm) GetPathCap() {
 	start := len(sliceOfStartingRoomsName)
 	end := len(sliceOfEndingRoomsName)
 	if end > start {
-		f.PathObject.PathsCap = end
+		f.PathsCap = end
 	}
-	f.PathObject.PathsCap = start
+	f.PathsCap = start
+}
+
+func (f *Farm) SortPaths() {
+	f.sortPathSize()
+	f.GetPathCap()
 }
