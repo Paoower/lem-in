@@ -7,16 +7,16 @@ import (
 
 // Farm datatype
 type Farm struct {
-	Ants       int
-	Rooms      []*room.Room
-	PathObject *path.PathObject
+	Ants     int
+	PathsCap int
+	Rooms    []*room.Room
+	Paths    []*path.Path
 }
 
 // Constructor
 func NewFarm() *Farm {
 	return &Farm{
-		Ants:       0,
-		Rooms:      []*room.Room{},
-		PathObject: &path.PathObject{},
+		Ants:  0,
+		Rooms: []*room.Room{},
 	}
 }

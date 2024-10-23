@@ -2,7 +2,6 @@ package src
 
 import (
 	"errors"
-	"fmt"
 	"os"
 )
 
@@ -13,17 +12,16 @@ func isARealFile(txtfilepath string) bool {
 }
 
 // Was the application properly launched with a valid argument ?
-func ArgsValidation() bool {
+func ArgsValidation() error {
 	if len(os.Args) != 2 {
-		fmt.Println("Error: invalid argument")
+		return errors.New("invalid argument")
 	} else {
 		txtfilepath := os.Args[1]
 		if isARealFile(txtfilepath) {
-			fmt.Println("Error : the specified file wasn't found")
+			return errors.New("the specified file wasn't found")
 		} else {
 			//Good number of argument, and the txt file exist at the end of the given path
-			return true
+			return nil
 		}
 	}
-	return false
 }

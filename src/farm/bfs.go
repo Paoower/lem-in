@@ -49,7 +49,7 @@ func (f *Farm) BFS() {
 		}
 	}
 
-	f.PathObject.Paths = allPaths
+	f.Paths = allPaths
 }
 
 // Helper function to check if a room is in a path
@@ -64,11 +64,11 @@ func containsRoom(route []*room.Room, room *room.Room) bool {
 
 func (f *Farm) GetAllPaths() {
 	f.BFS()
-	if len(f.PathObject.Paths) == 0 {
+	if len(f.Paths) == 0 {
 		fmt.Println("No path found")
 		return
 	}
-	for _, p := range f.PathObject.Paths {
+	for _, p := range f.Paths {
 		for _, r := range p.Rooms {
 			fmt.Print(r.Name, " ")
 		}
