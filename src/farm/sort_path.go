@@ -17,12 +17,12 @@ func (f *Farm) GetPathCap() {
 	var sliceOfStartingRoomsName []string
 	var sliceOfEndingRoomsName []string
 
-	for i := 0; i < len(f.PathObject.Paths); i++ {
-		tempName := f.PathObject.Paths[i].Rooms[0].Name
+	for i := 0; i < len(f.Paths); i++ {
+		tempName := f.Paths[i].Rooms[0].Name
 		if !slices.Contains(sliceOfStartingRoomsName, tempName) {
 			sliceOfStartingRoomsName = append(sliceOfStartingRoomsName, tempName)
 		}
-		tempName = f.PathObject.Paths[i].Rooms[len(f.PathObject.Paths[i].Rooms)-1].Name
+		tempName = f.Paths[i].Rooms[len(f.Paths[i].Rooms)-1].Name
 		if !slices.Contains(sliceOfEndingRoomsName, tempName) {
 			sliceOfEndingRoomsName = append(sliceOfEndingRoomsName, tempName)
 		}
