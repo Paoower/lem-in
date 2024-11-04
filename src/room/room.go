@@ -11,7 +11,7 @@ type Room struct {
 	Name     string
 	X        int
 	Y        int
-	Occupied bool
+	AntNb    int // 0 if none
 	Links    []*Room
 }
 
@@ -38,7 +38,7 @@ func NewRoom(name string, x int, y int) *Room {
 		Name:     name,
 		X:        x,
 		Y:        y,
-		Occupied: false,
+		AntNb:    0,
 		Links:    []*Room{},
 	}
 }
