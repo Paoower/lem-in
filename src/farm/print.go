@@ -27,9 +27,9 @@ func	(f *Farm) Print() {
 	var rooms		[]*room.Room
 	var	roomsLen	int
 
-	roomsLen = len(f.Rooms)
+	roomsLen = len(f.Rooms[1:])
 	rooms = make([]*room.Room, roomsLen)
-	copy(rooms, f.Rooms)
+	copy(rooms, f.Rooms[1:])
 	orderByAntNb(rooms)
 	for i, r := range rooms {
 		if (r.AntNb == 0) {
