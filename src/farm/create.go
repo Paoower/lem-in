@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"lem-in/src/room"
-	"lem-in/src/tools"
+	t "lem-in/src/tools"
 	"log"
 	"os"
 	"strconv"
@@ -15,6 +15,7 @@ import (
 func (farm *Farm) Insert(index int, value *room.Room) {
 	if len(farm.Rooms) == index {
 		farm.Rooms = append(farm.Rooms, value)
+		return
 	}
 	farm.Rooms = append(farm.Rooms[:index+1], farm.Rooms[index:]...)
 	farm.Rooms[index] = value
@@ -33,7 +34,7 @@ func (farm *Farm) Create(filepath string) {
 	// Handle file opening
 	var file *os.File
 	file, e = os.Open(filepath)
-	tools.Check(e)
+	t.Check(e)
 	defer file.Close()
 
 	// Variables to get the start and end rooms
@@ -63,7 +64,7 @@ func (farm *Farm) Create(filepath string) {
 			}
 
 			// Check ants count
-			tools.Check(farm.checkAnts(a))
+			t.Check(farm.checkAnts(a))
 
 			// Set ants value and skip line
 			farm.Ants = a
@@ -73,6 +74,7 @@ func (farm *Farm) Create(filepath string) {
 
 		// Check for start room
 		if strings.HasPrefix(line, "##sta") {
+			t.Debug("Found start room")
 			start = true
 			continue
 		}
@@ -102,7 +104,7 @@ func (farm *Farm) Create(filepath string) {
 		var room room.Room
 		var e error
 		room, e = farm.parseRoom(line)
-		tools.Check(e)
+		t.Check(e)
 
 		// Add the room at the beginning of the slice if its the start room
 		if start {
@@ -129,11 +131,11 @@ func (farm *Farm) Create(filepath string) {
 
 	// Parsing links
 	e = farm.parseLinks(links)
-	tools.Check(e)
+	t.Check(e)
 
 	// Check if the first/final room is reachable
-	tools.Check(farm.Rooms[0].CheckRoomLink())
-	tools.Check(farm.Rooms[len(farm.Rooms)-1].CheckRoomLink())
+	t.Check(farm.Rooms[0].CheckRoomLink())
+	t.Check(farm.Rooms[len(farm.Rooms)-1].CheckRoomLink())
 
 	if e = scanner.Err(); e != nil {
 		log.Fatal(e)
