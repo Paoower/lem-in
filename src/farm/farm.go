@@ -1,18 +1,16 @@
 package farm
 
-import (
-	o "lem-in/src/objects"
-)
+import e "lem-in/src/farm/entities"
 
 // Farm datatype
 type Farm struct {
 	TotalAnts	int
-	Ants		[]*o.Ant
+	Ants		[]*e.Ant
 	AntNb		int
 	PathsCap	int
-	Rooms		[]*o.Room
-	Paths		[]*o.Path
-	Solutions	[]*o.Solution
+	Rooms		[]*e.Room
+	Paths		[]*e.Path
+	Solutions	[]*e.Solution
 
 }
 
@@ -20,8 +18,8 @@ type Farm struct {
 func NewFarm() *Farm {
 	return &Farm{
 		TotalAnts:	0,
-		Ants:		[]*o.Ant{},
+		Ants:		[]*e.Ant{},
 		AntNb:		0,
-		Rooms:		[]*o.Room{},
+		Rooms:		[]*e.Room{},
 	}
 }

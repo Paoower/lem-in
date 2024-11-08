@@ -1,4 +1,4 @@
-package objects
+package entities
 
 type Path struct {
 	Rooms []*Room

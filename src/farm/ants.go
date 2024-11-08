@@ -2,13 +2,13 @@ package farm
 
 import (
 	"fmt"
-	o "lem-in/src/objects"
+	e "lem-in/src/farm/entities"
 	"slices"
 )
 
 func	(farm *Farm) PrintAntsPositions() {
-	var ant			*o.Ant
-	var currentRoom	*o.Room
+	var ant			*e.Ant
+	var currentRoom	*e.Room
 	var i			int
 	var antsLen		int
 
@@ -28,10 +28,10 @@ func	(farm *Farm) PrintAntsPositions() {
 // Add awaiting ants into the circuit.
 //
 // Returns the number of ants added.
-func	(farm *Farm) AddNewAnts(solution *o.Solution) int {
-	var path		*o.Path
-	var ant			*o.Ant
-	var firstRoom	*o.Room
+func	(farm *Farm) AddNewAnts(solution *e.Solution) int {
+	var path		*e.Path
+	var ant			*e.Ant
+	var firstRoom	*e.Room
 	var i			int
 
 	for i, path = range solution.Paths {
@@ -49,7 +49,7 @@ func	(farm *Farm) AddNewAnts(solution *o.Solution) int {
 			// room already used and is not the end
 			continue
 		}
-		ant = o.NewAnt(farm.AntNb + 1, path) // create ant
+		ant = e.NewAnt(farm.AntNb + 1, path) // create ant
 		farm.AntNb += 1
 		farm.Ants = append(farm.Ants, ant) // add ant into the slice of ants
 		firstRoom.Ants = append(firstRoom.Ants, ant)
@@ -60,15 +60,15 @@ func	(farm *Farm) AddNewAnts(solution *o.Solution) int {
 
 func	(farm *Farm) MoveCurrentsAnts() {
 	var i			int
-	var antStatus	o.AntStatus
+	var antStatus	e.AntStatus
 
 	i = 0
 	for i < len(farm.Ants) {
 		antStatus = farm.Ants[i].Move()
-		if antStatus == o.AntNotValid {
+		if antStatus == e.AntNotValid {
 			panic(fmt.Sprintf("Error: Ant %d not valid", farm.Ants[i].Id))
 		}
-		if antStatus == o.AntDeleted {
+		if antStatus == e.AntDeleted {
 			farm.Ants = append(farm.Ants[:i], farm.Ants[i+1:]...)
 			farm.Ants = slices.Delete(farm.Ants, i, i+1)
 			continue

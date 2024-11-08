@@ -3,7 +3,7 @@ package farm
 import (
 	"bufio"
 	"errors"
-	o "lem-in/src/objects"
+	e "lem-in/src/farm/entities"
 	t "lem-in/src/tools"
 	"log"
 	"os"
@@ -12,7 +12,7 @@ import (
 )
 
 // Insert room element into rooms slice
-func (farm *Farm) Insert(index int, value *o.Room) {
+func (farm *Farm) Insert(index int, value *e.Room) {
 	if len(farm.Rooms) == index {
 		farm.Rooms = append(farm.Rooms, value)
 		return
@@ -23,7 +23,7 @@ func (farm *Farm) Insert(index int, value *o.Room) {
 
 // Main function for the farm's mapping
 func (farm *Farm) Create(filepath string) {
-	var e error
+	var err error
 
 	// Slice variables
 	var links []string
@@ -33,14 +33,14 @@ func (farm *Farm) Create(filepath string) {
 
 	// Handle file opening
 	var file *os.File
-	file, e = os.Open(filepath)
-	t.Check(e)
+	file, err = os.Open(filepath)
+	t.Check(err)
 	defer file.Close()
 
 	// Variables to get the start and end rooms
 	var start bool = false
 	var end bool = false
-	var finalRoom *o.Room
+	var finalRoom *e.Room
 
 	// Scanner to read the file
 	var scanner *bufio.Scanner = bufio.NewScanner(file)
@@ -101,7 +101,7 @@ func (farm *Farm) Create(filepath string) {
 		}
 
 		// Parse room data
-		var room o.Room
+		var room e.Room
 		var e error
 		room, e = farm.parseRoom(line)
 		t.Check(e)
@@ -130,14 +130,14 @@ func (farm *Farm) Create(filepath string) {
 	}
 
 	// Parsing links
-	e = farm.parseLinks(links)
-	t.Check(e)
+	err = farm.parseLinks(links)
+	t.Check(err)
 
 	// Check if the first/final room is reachable
 	t.Check(farm.Rooms[0].CheckRoomLink())
 	t.Check(farm.Rooms[len(farm.Rooms)-1].CheckRoomLink())
 
-	if e = scanner.Err(); e != nil {
-		log.Fatal(e)
+	if err = scanner.Err(); err != nil {
+		log.Fatal(err)
 	}
 }
