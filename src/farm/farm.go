@@ -12,7 +12,7 @@ type Farm struct {
 	PathsCap  int
 	Rooms     []*room.Room
 	Paths     []*path.Path
-	Solutions [][]solution.Solution
+	Solutions []solution.Solution
 }
 
 // Constructor

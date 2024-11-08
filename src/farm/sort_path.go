@@ -68,7 +68,9 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 				}
 			}
 		}
-		f.Solutions = append(f.Solutions, solutionSlice)
+		for collect := range solutionSlice {
+			f.Solutions = append(f.Solutions, solutionSlice[collect])
+		}
 	}
 }
 
@@ -86,9 +88,40 @@ func (f *Farm) TestCheckingForAllSolutions() {
 	fmt.Println(f.Solutions)
 }
 
+func (f *Farm) GetRidOfCopy() {
+	for indexFirstSolution := range f.Solutions {
+		for indexSecondSolution := indexFirstSolution + 1; indexSecondSolution < len(f.Solutions); indexSecondSolution++ {
+			if len(f.Solutions[indexFirstSolution].Paths) != len(f.Solutions[indexSecondSolution].Paths) {
+				isaMatch := false
+				for indexPathInFirstSolution := range f.Solutions[indexFirstSolution].Paths {
+					if isaMatch || indexPathInFirstSolution == 0 {
+						isaMatch = false
+						for indexPathInSecondSolution := range f.Solutions[indexSecondSolution].Paths {
+							if f.Solutions[indexFirstSolution].Paths[indexPathInFirstSolution] == f.Solutions[indexSecondSolution].Paths[indexPathInSecondSolution] {
+								isaMatch = true
+							}
+						}
+					}
+				}
+				if isaMatch {
+					if indexSecondSolution == len(f.Solutions)-1 {
+						f.Solutions = f.Solutions[:indexSecondSolution]
+					} else {
+						tempSlice := f.Solutions[indexSecondSolution+1:]
+						f.Solutions = append(f.Solutions[:indexSecondSolution], tempSlice...)
+						indexSecondSolution--
+					}
+				}
+			}
+		}
+	}
+}
+
 func (f *Farm) SortPaths() {
 	f.sortPathSize()
 	f.GetPathCap()
 	f.LookingForEveryPossibleSolution()
+	f.TestCheckingForAllSolutions()
+	f.GetRidOfCopy()
 	f.TestCheckingForAllSolutions()
 }
