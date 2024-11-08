@@ -3,6 +3,7 @@ package farm
 import (
 	"lem-in/src/path"
 	"lem-in/src/room"
+	"lem-in/src/solution"
 )
 
 // Farm datatype
@@ -11,7 +12,7 @@ type Farm struct {
 	PathsCap  int
 	Rooms     []*room.Room
 	Paths     []*path.Path
-	Solutions []*path.Solution
+	Solutions [][]solution.Solution
 }
 
 // Constructor

@@ -13,17 +13,3 @@ func NewPath(rooms []*room.Room) *Path {
 		Cost:  len(rooms),
 	}
 }
-
-// Solution datatype
-type Solution struct {
-	Paths        []*Path
-	PathsTrigger []int
-}
-
-// Constructor
-func NewSolution() *Solution {
-	return &Solution{
-		Paths:        []*Path{},
-		PathsTrigger: []int{},
-	}
-}
