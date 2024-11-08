@@ -85,13 +85,15 @@ func (f *Farm) InializationSolutionSlice(index int) []solution.Solution {
 }
 
 func (f *Farm) TestCheckingForAllSolutions() {
-	fmt.Println(f.Solutions)
+	for _, s := range f.Solutions {
+		fmt.Println(s)
+	}
 }
 
 func (f *Farm) GetRidOfCopy() {
 	for indexFirstSolution := range f.Solutions {
 		for indexSecondSolution := indexFirstSolution + 1; indexSecondSolution < len(f.Solutions); indexSecondSolution++ {
-			if len(f.Solutions[indexFirstSolution].Paths) != len(f.Solutions[indexSecondSolution].Paths) {
+			if len(f.Solutions[indexFirstSolution].Paths) == len(f.Solutions[indexSecondSolution].Paths) {
 				isaMatch := false
 				for indexPathInFirstSolution := range f.Solutions[indexFirstSolution].Paths {
 					if isaMatch || indexPathInFirstSolution == 0 {
@@ -107,8 +109,7 @@ func (f *Farm) GetRidOfCopy() {
 					if indexSecondSolution == len(f.Solutions)-1 {
 						f.Solutions = f.Solutions[:indexSecondSolution]
 					} else {
-						tempSlice := f.Solutions[indexSecondSolution+1:]
-						f.Solutions = append(f.Solutions[:indexSecondSolution], tempSlice...)
+						f.Solutions = append(f.Solutions[:indexSecondSolution], f.Solutions[indexSecondSolution+1:]...)
 						indexSecondSolution--
 					}
 				}
@@ -121,7 +122,6 @@ func (f *Farm) SortPaths() {
 	f.sortPathSize()
 	f.GetPathCap()
 	f.LookingForEveryPossibleSolution()
-	f.TestCheckingForAllSolutions()
 	f.GetRidOfCopy()
 	f.TestCheckingForAllSolutions()
 }
