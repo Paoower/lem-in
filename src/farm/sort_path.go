@@ -1,6 +1,7 @@
 package farm
 
 import (
+	"fmt"
 	"lem-in/src/path"
 	"lem-in/src/solution"
 	"slices"
@@ -39,9 +40,9 @@ func (f *Farm) GetPathCap() {
 
 func IsACompatiblePath(solutionSlice solution.Solution, path *path.Path) bool {
 	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
-		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms); indexRoomInSolutionPath++ {
-			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms); indexRoomInArgPath++ {
-				if path.Rooms[indexRoomInArgPath] == solutionSlice.Paths[indexPathInSolution].Rooms[indexRoomInSolutionPath] {
+		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms)-1; indexRoomInSolutionPath++ {
+			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms)-1; indexRoomInArgPath++ {
+				if indexRoomInArgPath != 0 && indexRoomInSolutionPath != 0 && path.Rooms[indexRoomInArgPath] == solutionSlice.Paths[indexPathInSolution].Rooms[indexRoomInSolutionPath] {
 					return false
 				}
 			}
@@ -76,13 +77,18 @@ func (f *Farm) InializationSolutionSlice(index int) []solution.Solution {
 	var solutionSlice []solution.Solution
 	firstPath := f.Paths[index]
 	firstSolution := solution.NewSolution()
-	firstSolution.Paths[0] = firstPath
+	firstSolution.Paths = append(firstSolution.Paths, firstPath)
 	solutionSlice = append(solutionSlice, firstSolution)
 	return solutionSlice
+}
+
+func (f *Farm) TestCheckingForAllSolutions() {
+	fmt.Println(f.Solutions)
 }
 
 func (f *Farm) SortPaths() {
 	f.sortPathSize()
 	f.GetPathCap()
-	//f.LookingForEveryPossibleSolution()
+	f.LookingForEveryPossibleSolution()
+	f.TestCheckingForAllSolutions()
 }
