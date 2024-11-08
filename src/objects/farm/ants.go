@@ -25,12 +25,19 @@ func	(farm *Farm) PrintAntsPositions() {
 	}
 }
 
-func	(farm *Farm) AddNewAnts(solution o.Solution) {
+// Add awaiting ants into the circuit.
+//
+// Returns the number of ants added.
+func	(farm *Farm) AddNewAnts(solution *o.Solution) int {
 	var path		*o.Path
 	var ant			*o.Ant
 	var firstRoom	*o.Room
+	var i			int
 
-	for _, path = range solution.Paths {
+	for i, path = range solution.Paths {
+		if farm.AntNb == farm.TotalAnts {
+			return i
+		}
 		if path == nil {
 			continue
 		}
@@ -42,13 +49,16 @@ func	(farm *Farm) AddNewAnts(solution o.Solution) {
 			// room already used and is not the end
 			continue
 		}
-		ant = o.NewAnt(farm.AntNextId, path)
-		farm.Ants = append(farm.Ants, ant)
+		ant = o.NewAnt(farm.AntNb + 1, path) // create ant
+		farm.AntNb += 1
+		farm.Ants = append(farm.Ants, ant) // add ant into the slice of ants
 		firstRoom.Ants = append(firstRoom.Ants, ant)
+		// add ant into the first room
 	}
+	return i
 }
 
-func	(farm *Farm) MoveAllAnts(solution o.Solution) {
+func	(farm *Farm) MoveCurrentsAnts() {
 	var i			int
 	var antStatus	o.AntStatus
 

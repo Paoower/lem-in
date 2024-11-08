@@ -8,7 +8,7 @@ import (
 type Farm struct {
 	TotalAnts	int
 	Ants		[]*o.Ant
-	AntNextId	int
+	AntNb		int
 	PathsCap	int
 	Rooms		[]*o.Room
 	Paths		[]*o.Path
@@ -21,7 +21,7 @@ func NewFarm() *Farm {
 	return &Farm{
 		TotalAnts:	0,
 		Ants:		[]*o.Ant{},
-		AntNextId:	0,
+		AntNb:		0,
 		Rooms:		[]*o.Room{},
 	}
 }
