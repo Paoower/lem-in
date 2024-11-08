@@ -6,6 +6,25 @@ import (
 	"slices"
 )
 
+func	(farm *Farm) PrintAntsPositions() {
+	var ant			*o.Ant
+	var currentRoom	*o.Room
+	var i			int
+	var antsLen		int
+
+	antsLen = len(farm.Ants)
+	for i, ant = range farm.Ants {
+		currentRoom = ant.Path.Rooms[ant.IndexRoom]
+		fmt.Printf("L%d-%s", ant.Id, currentRoom.Name)
+		if i == antsLen - 1 {
+			// on last element
+			fmt.Print("\n")
+		} else {
+			fmt.Print(" ")
+		}
+	}
+}
+
 func	(farm *Farm) AddNewAnts(solution o.Solution) {
 	var path		*o.Path
 	var ant			*o.Ant
