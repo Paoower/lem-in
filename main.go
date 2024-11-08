@@ -2,7 +2,7 @@ package main
 
 import (
 	"lem-in/src"
-	"lem-in/src/farm"
+	"lem-in/src/objects/farm"
 	"lem-in/src/tools"
 	"os"
 )

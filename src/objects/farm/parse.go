@@ -3,21 +3,21 @@ package farm
 import (
 	"errors"
 	"fmt"
-	"lem-in/src/room"
+	o "lem-in/src/objects"
 	"lem-in/src/tools"
 	"strconv"
 	"strings"
 )
 
 // Given a line, this function extracts the room's values
-func (farm *Farm) parseRoom(line string) (room.Room, error) {
+func (farm *Farm) parseRoom(line string) (o.Room, error) {
 	var fields []string = strings.Split(line, " ")
 	var e error
 
 	// tools.Checking the line's format
 	if len(fields) != 3 {
 		fmt.Println(fields)
-		return room.Room{}, errors.New("incorrect room format")
+		return o.Room{}, errors.New("incorrect room format")
 	}
 
 	// Room's name
@@ -28,23 +28,23 @@ func (farm *Farm) parseRoom(line string) (room.Room, error) {
 	var x int
 	x, e = strconv.Atoi(fields[1])
 	if e != nil {
-		return room.Room{}, errors.New("invalid data format for x-coordinate")
+		return o.Room{}, errors.New("invalid data format for x-coordinate")
 	}
 
 	// Converting the second field
 	var y int
 	y, e = strconv.Atoi(fields[2])
 	if e != nil {
-		return room.Room{}, errors.New("invalid data format for y-coordinate")
+		return o.Room{}, errors.New("invalid data format for y-coordinate")
 	}
 
 	// Creating the room
-	var r room.Room = room.Room{Name: name, X: x, Y: y, Links: []*room.Room{}}
+	var r o.Room = o.Room{Name: name, X: x, Y: y, Links: []*o.Room{}}
 
 	// tools.Checking if the room is already saved
 	if farm.isRoomThere(r) {
 		fmt.Println(r)
-		return room.Room{}, errors.New("duplicate room")
+		return o.Room{}, errors.New("duplicate room")
 	}
 
 	return r, nil
@@ -57,12 +57,12 @@ func (farm *Farm) parseLinks(links []string) error {
 		roomNames := strings.Split(link, "-")
 
 		// Get the first room
-		var r1 *room.Room
+		var r1 *o.Room
 		r1, e = farm.getRoom(roomNames[0])
 		tools.Check(e)
 
 		// Get the second room
-		var r2 *room.Room
+		var r2 *o.Room
 		r2, e = farm.getRoom(roomNames[1])
 		tools.Check(e)
 

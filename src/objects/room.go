@@ -1,4 +1,4 @@
-package room
+package objects
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ type Room struct {
 	Name     string
 	X        int
 	Y        int
-	AntNb    int // 0 if none
+	Ants     []*Ant
 	Links    []*Room
 }
 
@@ -38,7 +38,7 @@ func NewRoom(name string, x int, y int) *Room {
 		Name:     name,
 		X:        x,
 		Y:        y,
-		AntNb:    0,
+		Ants:     []*Ant{},
 		Links:    []*Room{},
 	}
 }

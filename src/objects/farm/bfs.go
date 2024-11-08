@@ -3,8 +3,7 @@ package farm
 import (
 	"container/list"
 	"fmt"
-	"lem-in/src/path"
-	"lem-in/src/room"
+	o "lem-in/src/objects"
 	t "lem-in/src/tools"
 )
 
@@ -14,16 +13,16 @@ func (f *Farm) BFS() {
 	end := f.Rooms[len(f.Rooms)-1]
 
 	// Store all paths and create BFS queue
-	var allPaths []*path.Path
+	var allPaths []*o.Path
 	queue := list.New()
 
 	// Add the first path with the first room
-	firstPath := path.NewPath([]*room.Room{start})
+	firstPath := o.NewPath([]*o.Room{start})
 	queue.PushBack(firstPath)
 
 	for queue.Len() > 0 {
 		// Dequeue the current path
-		p := queue.Remove(queue.Front()).(*path.Path)
+		p := queue.Remove(queue.Front()).(*o.Path)
 		currentRoom := p.Rooms[len(p.Rooms)-1]
 
 		// If we have reached the destination, store the path
@@ -40,11 +39,11 @@ func (f *Farm) BFS() {
 			}
 
 			// Create a new path by copying the current one and extending it
-			newRoute := make([]*room.Room, len(p.Rooms))
+			newRoute := make([]*o.Room, len(p.Rooms))
 			copy(newRoute, p.Rooms)
 			newRoute = append(newRoute, linkedRoom)
 
-			newPath := path.NewPath(newRoute)
+			newPath := o.NewPath(newRoute)
 			queue.PushBack(newPath)
 		}
 	}
@@ -53,7 +52,7 @@ func (f *Farm) BFS() {
 }
 
 // Helper function to check if a room is in a path
-func containsRoom(route []*room.Room, room *room.Room) bool {
+func containsRoom(route []*o.Room, room *o.Room) bool {
 	for _, r := range route {
 		if r == room {
 			return true

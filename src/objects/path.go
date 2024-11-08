@@ -1,13 +1,11 @@
-package path
-
-import "lem-in/src/room"
+package objects
 
 type Path struct {
-	Rooms []*room.Room
+	Rooms []*Room
 	Cost  int
 }
 
-func NewPath(rooms []*room.Room) *Path {
+func NewPath(rooms []*Room) *Path {
 	return &Path{
 		Rooms: rooms,
 		Cost:  len(rooms),

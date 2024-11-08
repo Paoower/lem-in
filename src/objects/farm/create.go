@@ -3,7 +3,7 @@ package farm
 import (
 	"bufio"
 	"errors"
-	"lem-in/src/room"
+	o "lem-in/src/objects"
 	t "lem-in/src/tools"
 	"log"
 	"os"
@@ -12,7 +12,7 @@ import (
 )
 
 // Insert room element into rooms slice
-func (farm *Farm) Insert(index int, value *room.Room) {
+func (farm *Farm) Insert(index int, value *o.Room) {
 	if len(farm.Rooms) == index {
 		farm.Rooms = append(farm.Rooms, value)
 		return
@@ -40,7 +40,7 @@ func (farm *Farm) Create(filepath string) {
 	// Variables to get the start and end rooms
 	var start bool = false
 	var end bool = false
-	var finalRoom *room.Room
+	var finalRoom *o.Room
 
 	// Scanner to read the file
 	var scanner *bufio.Scanner = bufio.NewScanner(file)
@@ -67,7 +67,7 @@ func (farm *Farm) Create(filepath string) {
 			t.Check(farm.checkAnts(a))
 
 			// Set ants value and skip line
-			farm.Ants = a
+			farm.TotalAnts = a
 			firstline = false
 			continue
 		}
@@ -101,7 +101,7 @@ func (farm *Farm) Create(filepath string) {
 		}
 
 		// Parse room data
-		var room room.Room
+		var room o.Room
 		var e error
 		room, e = farm.parseRoom(line)
 		t.Check(e)
