@@ -38,6 +38,15 @@ func (f *Farm) GetPathCap() {
 }
 
 func IsACompatiblePath(solutionSlice solution.Solution, path *path.Path) bool {
+	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
+		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms); indexRoomInSolutionPath++ {
+			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms); indexRoomInArgPath++ {
+				if path.Rooms[indexRoomInArgPath] == solutionSlice.Paths[indexPathInSolution].Rooms[indexRoomInSolutionPath] {
+					return false
+				}
+			}
+		}
+	}
 	return true
 }
 
@@ -46,6 +55,7 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 		solutionSlice := f.InializationSolutionSlice(indexPath)
 		for nbrOfPaths := 1; nbrOfPaths < f.PathsCap; nbrOfPaths++ {
 			for indexSolution := range solutionSlice {
+				Sœ
 				if len(solutionSlice[indexSolution].Paths) == nbrOfPaths {
 					for otherPath := range f.Paths {
 						if otherPath != indexPath {
