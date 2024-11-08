@@ -55,7 +55,6 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 		solutionSlice := f.InializationSolutionSlice(indexPath)
 		for nbrOfPaths := 1; nbrOfPaths < f.PathsCap; nbrOfPaths++ {
 			for indexSolution := range solutionSlice {
-				Sœ
 				if len(solutionSlice[indexSolution].Paths) == nbrOfPaths {
 					for otherPath := range f.Paths {
 						if otherPath != indexPath {
