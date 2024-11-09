@@ -23,11 +23,26 @@ func	NewAnt(id int, path *Path) *Ant {
 	}
 }
 
+func (status AntStatus) Message() string {
+	switch status {
+	case AntMoved:
+		return "The ant has moved"
+	case AntNotMoved:
+		return "The ant has not moved"
+	case AntDeleted:
+		return "The ant has been deleted"
+	case AntNotValid:
+		return "The ant is not valid"
+	default:
+		return "Unknown status"
+	}
+}
+
 func	(ant *Ant) Move() AntStatus {
 	var newIndex	int
 	var roomsLen	int
 	var rooms		[]*Room
-	var newRoomAnts	[]*Ant
+	var newRoom		*Room
 
 	rooms = ant.Path.Rooms
 	roomsLen = len(rooms)
@@ -41,13 +56,13 @@ func	(ant *Ant) Move() AntStatus {
 		rooms[ant.IndexRoom].Ants = []*Ant{}
 		return AntDeleted
 	}
-	newRoomAnts = rooms[newIndex].Ants
-	if len(newRoomAnts) > 0 && newIndex != roomsLen - 1 {
+	newRoom = rooms[newIndex]
+	if len(newRoom.Ants) > 0 && newIndex != roomsLen - 1 {
 		// room already used and is not the end
 		return AntNotMoved
 	}
 	rooms[ant.IndexRoom].Ants = []*Ant{}
-	newRoomAnts = append(newRoomAnts, ant)
+	newRoom.Ants = append(newRoom.Ants, ant)
 	ant.IndexRoom = newIndex
 	return AntMoved
 }
