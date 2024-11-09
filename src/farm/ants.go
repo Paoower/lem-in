@@ -33,15 +33,14 @@ func	(farm *Farm) AddNewAnts(solution *e.Solution) int {
 	var ant			*e.Ant
 	var firstRoom	*e.Room
 	var i			int
+	var antAdded	int
 
-	for i, path = range solution.Paths {
+	antAdded = 0
+	for i = 0; i < len(solution.Paths); i++ {
+		path = solution.Paths[i]
 		if farm.AntNb == farm.TotalAnts {
-			return i
-		}
-		if path == nil {
-			continue
-		}
-		if len(path.Rooms) < 1 {
+			return antAdded
+		} else if path == nil || len(path.Rooms) == 0 {
 			continue
 		}
 		firstRoom = path.Rooms[0]
@@ -49,13 +48,13 @@ func	(farm *Farm) AddNewAnts(solution *e.Solution) int {
 			// room already used and is not the end
 			continue
 		}
-		ant = e.NewAnt(farm.AntNb + 1, path) // create ant
-		farm.AntNb += 1
-		farm.Ants = append(farm.Ants, ant) // add ant into the slice of ants
+		ant = e.NewAnt(farm.AntNb + 1, path)
+		farm.AntNb++
+		farm.Ants = append(farm.Ants, ant)
 		firstRoom.Ants = append(firstRoom.Ants, ant)
-		// add ant into the first room
+		antAdded++
 	}
-	return i
+	return antAdded
 }
 
 func	(farm *Farm) MoveCurrentsAnts() {
@@ -65,11 +64,10 @@ func	(farm *Farm) MoveCurrentsAnts() {
 	i = 0
 	for i < len(farm.Ants) {
 		antStatus = farm.Ants[i].Move()
-		if antStatus == e.AntNotValid {
+		if antStatus == e.AntStatusNotValid {
 			panic(fmt.Sprintf("Error: Ant %d not valid", farm.Ants[i].Id))
 		}
-		if antStatus == e.AntDeleted {
-			farm.Ants = append(farm.Ants[:i], farm.Ants[i+1:]...)
+		if antStatus == e.AntStatusDeleted {
 			farm.Ants = slices.Delete(farm.Ants, i, i+1)
 			continue
 		}

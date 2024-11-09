@@ -3,10 +3,10 @@ package entities
 type AntStatus int
 
 const (
-	AntMoved AntStatus = iota
-	AntNotMoved
-	AntDeleted
-	AntNotValid
+	AntStatusMoved AntStatus = iota
+	AntStatusNotMoved
+	AntStatusDeleted
+	AntStatusNotValid
 )
 
 type Ant struct {
@@ -25,13 +25,13 @@ func	NewAnt(id int, path *Path) *Ant {
 
 func (status AntStatus) Message() string {
 	switch status {
-	case AntMoved:
+	case AntStatusMoved:
 		return "The ant has moved"
-	case AntNotMoved:
+	case AntStatusNotMoved:
 		return "The ant has not moved"
-	case AntDeleted:
+	case AntStatusDeleted:
 		return "The ant has been deleted"
-	case AntNotValid:
+	case AntStatusNotValid:
 		return "The ant is not valid"
 	default:
 		return "Unknown status"
@@ -48,21 +48,22 @@ func	(ant *Ant) Move() AntStatus {
 	roomsLen = len(rooms)
 	if ant.IndexRoom < 0 || ant.IndexRoom >= roomsLen {
 		// index out of range
-		return AntNotValid
+		return AntStatusNotValid
 	}
 	newIndex = ant.IndexRoom + 1
 	if newIndex >= roomsLen {
 		// new index out of range
 		rooms[ant.IndexRoom].Ants = []*Ant{}
-		return AntDeleted
+		return AntStatusDeleted
 	}
 	newRoom = rooms[newIndex]
 	if len(newRoom.Ants) > 0 && newIndex != roomsLen - 1 {
 		// room already used and is not the end
-		return AntNotMoved
+		return AntStatusNotMoved
 	}
 	rooms[ant.IndexRoom].Ants = []*Ant{}
 	newRoom.Ants = append(newRoom.Ants, ant)
+	// fmt.Println(len(newRoom.Ants))
 	ant.IndexRoom = newIndex
-	return AntMoved
+	return AntStatusMoved
 }
