@@ -68,9 +68,7 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 				}
 			}
 		}
-		for collect := range solutionSlice {
-			f.Solutions = append(f.Solutions, solutionSlice[collect])
-		}
+		f.Solutions = append(f.Solutions, solutionSlice...)
 	}
 }
 
@@ -118,10 +116,18 @@ func (f *Farm) GetRidOfCopy() {
 	}
 }
 
+func (f *Farm) sortsolutions() {
+	for _, s := range f.Solutions {
+		s.Sort()
+		s.GetTriggers()
+		fmt.Println(s)
+	}
+}
+
 func (f *Farm) SortPaths() {
 	f.sortPathSize()
 	f.GetPathCap()
 	f.LookingForEveryPossibleSolution()
 	f.GetRidOfCopy()
-	f.TestCheckingForAllSolutions()
+	f.sortsolutions()
 }
