@@ -2,12 +2,12 @@ package farm
 
 import (
 	"errors"
-	"lem-in/src/room"
+	e "lem-in/src/farm/entities"
 	"strings"
 )
 
 // Fetches a room based on its name
-func (farm *Farm) getRoom(name string) (*room.Room, error) {
+func (farm *Farm) getRoom(name string) (*e.Room, error) {
 	for _, room := range farm.Rooms {
 		if room.Name == name {
 			return room, nil
@@ -25,7 +25,7 @@ func (farm *Farm) checkAnts(ants int) error {
 }
 
 // Checks if room was already saved
-func (farm Farm) isRoomThere(room room.Room) bool {
+func (farm Farm) isRoomThere(room e.Room) bool {
 	for _, r := range farm.Rooms {
 		if r.Name == room.Name {
 			return true

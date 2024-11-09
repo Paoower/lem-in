@@ -2,8 +2,7 @@ package farm
 
 import (
 	"fmt"
-	"lem-in/src/path"
-	"lem-in/src/solution"
+	"lem-in/src/farm/entities"
 	"slices"
 	"sort"
 )
@@ -38,7 +37,7 @@ func (f *Farm) GetPathCap() {
 	f.PathsCap = start
 }
 
-func IsACompatiblePath(solutionSlice solution.Solution, path *path.Path) bool {
+func IsACompatiblePath(solutionSlice entities.Solution, path *entities.Path) bool {
 	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
 		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms)-1; indexRoomInSolutionPath++ {
 			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms)-1; indexRoomInArgPath++ {
@@ -73,10 +72,10 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 }
 
 // a bloc function that create a slice Of the struct Solution, and initalize it's first path to the one chosen in parameter
-func (f *Farm) InializationSolutionSlice(index int) []solution.Solution {
-	var solutionSlice []solution.Solution
+func (f *Farm) InializationSolutionSlice(index int) []entities.Solution {
+	var solutionSlice []entities.Solution
 	firstPath := f.Paths[index]
-	firstSolution := solution.NewSolution()
+	firstSolution := entities.NewSolution()
 	firstSolution.Paths = append(firstSolution.Paths, firstPath)
 	solutionSlice = append(solutionSlice, firstSolution)
 	return solutionSlice

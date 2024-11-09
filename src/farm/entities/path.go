@@ -1,16 +1,13 @@
-package path
+package entities
 
-import (
-	"fmt"
-	"lem-in/src/room"
-)
+import "fmt"
 
 type Path struct {
-	Rooms []*room.Room
+	Rooms []*Room
 	Cost  int
 }
 
-func NewPath(rooms []*room.Room) *Path {
+func NewPath(rooms []*Room) *Path {
 	return &Path{
 		Rooms: rooms,
 		Cost:  len(rooms),

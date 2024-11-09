@@ -1,20 +1,17 @@
-package solution
+package entities
 
-import (
-	"lem-in/src/path"
-	"sort"
-)
+import "sort"
 
 // Solution datatype
 type Solution struct {
-	Paths        []*path.Path
+	Paths        []*Path
 	PathsTrigger []int
 }
 
 // Constructor
 func NewSolution() Solution {
 	return Solution{
-		Paths:        []*path.Path{},
+		Paths:        []*Path{},
 		PathsTrigger: []int{},
 	}
 }
