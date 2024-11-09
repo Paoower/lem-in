@@ -2,7 +2,7 @@ package farm
 
 import (
 	"fmt"
-	"lem-in/src/farm/entities"
+	e "lem-in/src/farm/entities"
 	"slices"
 	"sort"
 )
@@ -37,11 +37,12 @@ func (f *Farm) GetPathCap() {
 	f.PathsCap = start
 }
 
-func IsACompatiblePath(solutionSlice entities.Solution, path *entities.Path) bool {
-	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
-		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms)-1; indexRoomInSolutionPath++ {
-			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms)-1; indexRoomInArgPath++ {
-				if indexRoomInArgPath != 0 && indexRoomInSolutionPath != 0 && path.Rooms[indexRoomInArgPath] == solutionSlice.Paths[indexPathInSolution].Rooms[indexRoomInSolutionPath] {
+func IsACompatiblePath(solutionSlice e.Solution, path *e.Path) bool {
+	for i := 0; i < len(solutionSlice.Paths); i++ {
+		solutionPathRooms := solutionSlice.Paths[i].Rooms
+		for j := 0; j < len(solutionPathRooms) - 1; j++ {
+			for k := 0; k < len(path.Rooms) - 1; k++ {
+				if k != 0 && j != 0 && path.Rooms[k] == solutionPathRooms[j] {
 					return false
 				}
 			}
@@ -72,10 +73,10 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 }
 
 // a bloc function that create a slice Of the struct Solution, and initalize it's first path to the one chosen in parameter
-func (f *Farm) InializationSolutionSlice(index int) []entities.Solution {
-	var solutionSlice []entities.Solution
+func (f *Farm) InializationSolutionSlice(index int) []e.Solution {
+	var solutionSlice []e.Solution
 	firstPath := f.Paths[index]
-	firstSolution := entities.NewSolution()
+	firstSolution := e.NewSolution()
 	firstSolution.Paths = append(firstSolution.Paths, firstPath)
 	solutionSlice = append(solutionSlice, firstSolution)
 	return solutionSlice
