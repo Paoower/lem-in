@@ -74,12 +74,13 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 // a bloc function that create a slice Of the struct Solution,
 // and initalize it's first path to the one chosen in parameter
 func (f *Farm) InializationSolutionSlice(index int) []e.Solution {
-	var solutionSlice []e.Solution
+	var solutions []e.Solution
+
 	firstPath := f.Paths[index]
 	firstSolution := e.NewSolution()
 	firstSolution.Paths = append(firstSolution.Paths, firstPath)
-	solutionSlice = append(solutionSlice, firstSolution)
-	return solutionSlice
+	solutions = append(solutions, firstSolution)
+	return solutions
 }
 
 func (f *Farm) TestCheckingForAllSolutions() {
@@ -88,29 +89,44 @@ func (f *Farm) TestCheckingForAllSolutions() {
 	}
 }
 
+func	isAMatch(curSolutionPaths []*e.Path,
+					nextSolutionPaths []*e.Path) bool {
+	var isAMatch	bool
+
+	isAMatch = false
+	for i := range curSolutionPaths {
+		if !isAMatch && i != 0 {
+			continue
+		}
+		isAMatch = false
+		for j := range nextSolutionPaths {
+			if curSolutionPaths[i] == nextSolutionPaths[j] {
+				isAMatch = true
+			}
+		}
+	}
+	return isAMatch
+}
+
 func (f *Farm) GetRidOfCopy() {
-	for indexFirstSolution := range f.Solutions {
-		for indexSecondSolution := indexFirstSolution + 1; indexSecondSolution < len(f.Solutions); indexSecondSolution++ {
-			if len(f.Solutions[indexFirstSolution].Paths) == len(f.Solutions[indexSecondSolution].Paths) {
-				isaMatch := false
-				for indexPathInFirstSolution := range f.Solutions[indexFirstSolution].Paths {
-					if isaMatch || indexPathInFirstSolution == 0 {
-						isaMatch = false
-						for indexPathInSecondSolution := range f.Solutions[indexSecondSolution].Paths {
-							if f.Solutions[indexFirstSolution].Paths[indexPathInFirstSolution] == f.Solutions[indexSecondSolution].Paths[indexPathInSecondSolution] {
-								isaMatch = true
-							}
-						}
-					}
-				}
-				if isaMatch {
-					if indexSecondSolution == len(f.Solutions)-1 {
-						f.Solutions = f.Solutions[:indexSecondSolution]
-					} else {
-						f.Solutions = append(f.Solutions[:indexSecondSolution], f.Solutions[indexSecondSolution+1:]...)
-						indexSecondSolution--
-					}
-				}
+	var curSolutionPaths	[]*e.Path
+	var nextSolutionPaths	[]*e.Path
+
+	for i := range f.Solutions {
+		for j := i + 1; j < len(f.Solutions); j++ {
+			curSolutionPaths = f.Solutions[i].Paths
+			nextSolutionPaths = f.Solutions[j].Paths
+			if len(curSolutionPaths) != len(nextSolutionPaths) {
+				continue
+			}
+			if (!isAMatch(curSolutionPaths, nextSolutionPaths)) {
+				continue
+			}
+			if j == len(f.Solutions)-1 {
+				f.Solutions = f.Solutions[:j]
+			} else {
+				f.Solutions = append(f.Solutions[:j], f.Solutions[j+1:]...)
+				j--
 			}
 		}
 	}
