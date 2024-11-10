@@ -15,31 +15,30 @@ func (f *Farm) sortPathSize() {
 }
 
 func (f *Farm) GetPathCap() {
-	var sliceOfStartingRoomsName []string
-	var sliceOfEndingRoomsName []string
+	var startingRoomsNames []string
+	var endingRoomsNames []string
 
 	for i := 0; i < len(f.Paths); i++ {
 		tempName := f.Paths[i].Rooms[1].Name
-		if !slices.Contains(sliceOfStartingRoomsName, tempName) {
-			sliceOfStartingRoomsName = append(sliceOfStartingRoomsName, tempName)
+		if !slices.Contains(startingRoomsNames, tempName) {
+			startingRoomsNames = append(startingRoomsNames, tempName)
 		}
 		tempName = f.Paths[i].Rooms[len(f.Paths[i].Rooms)-2].Name
-		if !slices.Contains(sliceOfEndingRoomsName, tempName) {
-			sliceOfEndingRoomsName = append(sliceOfEndingRoomsName, tempName)
+		if !slices.Contains(endingRoomsNames, tempName) {
+			endingRoomsNames = append(endingRoomsNames, tempName)
 		}
 	}
-
-	start := len(sliceOfStartingRoomsName)
-	end := len(sliceOfEndingRoomsName)
+	start := len(startingRoomsNames)
+	end := len(endingRoomsNames)
 	if end > start {
 		f.PathsCap = end
 	}
 	f.PathsCap = start
 }
 
-func IsACompatiblePath(solutionSlice e.Solution, path *e.Path) bool {
-	for i := 0; i < len(solutionSlice.Paths); i++ {
-		solutionPathRooms := solutionSlice.Paths[i].Rooms
+func IsACompatiblePath(solutions e.Solution, path *e.Path) bool {
+	for i := 0; i < len(solutions.Paths); i++ {
+		solutionPathRooms := solutions.Paths[i].Rooms
 		for j := 0; j < len(solutionPathRooms) - 1; j++ {
 			for k := 0; k < len(path.Rooms) - 1; k++ {
 				if k != 0 && j != 0 && path.Rooms[k] == solutionPathRooms[j] {
@@ -52,27 +51,28 @@ func IsACompatiblePath(solutionSlice e.Solution, path *e.Path) bool {
 }
 
 func (f *Farm) LookingForEveryPossibleSolution() {
-	for indexPath := range f.Paths {
-		solutionSlice := f.InializationSolutionSlice(indexPath)
+	for i := range f.Paths {
+		solutions := f.InializationSolutionSlice(i)
 		for nbrOfPaths := 1; nbrOfPaths < f.PathsCap; nbrOfPaths++ {
-			for indexSolution := range solutionSlice {
-				if len(solutionSlice[indexSolution].Paths) == nbrOfPaths {
-					for otherPath := range f.Paths {
-						if otherPath != indexPath {
-							if IsACompatiblePath(solutionSlice[indexSolution], f.Paths[otherPath]) {
-								solutionSlice = append(solutionSlice, solutionSlice[indexSolution])
-								solutionSlice[indexSolution].Paths = append(solutionSlice[indexSolution].Paths, f.Paths[otherPath])
-							}
-						}
+			for j := range solutions {
+				if len(solutions[j].Paths) != nbrOfPaths {
+					continue
+				}
+				for k := range f.Paths {
+					if k == i || !IsACompatiblePath(solutions[j], f.Paths[k]) {
+						continue
 					}
+					solutions = append(solutions, solutions[j])
+					solutions[j].Paths = append(solutions[j].Paths, f.Paths[k])
 				}
 			}
 		}
-		f.Solutions = append(f.Solutions, solutionSlice...)
+		f.Solutions = append(f.Solutions, solutions...)
 	}
 }
 
-// a bloc function that create a slice Of the struct Solution, and initalize it's first path to the one chosen in parameter
+// a bloc function that create a slice Of the struct Solution,
+// and initalize it's first path to the one chosen in parameter
 func (f *Farm) InializationSolutionSlice(index int) []e.Solution {
 	var solutionSlice []e.Solution
 	firstPath := f.Paths[index]
