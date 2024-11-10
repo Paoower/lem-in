@@ -8,13 +8,13 @@ import (
 )
 
 func (f *Farm) sortPathSize() {
-	f.GetPathCap()
+	f.getPathCap()
 	sort.Slice(f.Paths, func(i int, j int) bool {
 		return len(f.Paths[i].Rooms) < len(f.Paths[j].Rooms)
 	})
 }
 
-func (f *Farm) GetPathCap() {
+func (f *Farm) getPathCap() {
 	var startingRoomsNames []string
 	var endingRoomsNames []string
 
@@ -36,9 +36,9 @@ func (f *Farm) GetPathCap() {
 	f.PathsCap = start
 }
 
-func IsACompatiblePath(solutions e.Solution, path *e.Path) bool {
-	for i := 0; i < len(solutions.Paths); i++ {
-		solutionPathRooms := solutions.Paths[i].Rooms
+func isACompatiblePath(solution e.Solution, path *e.Path) bool {
+	for i := 0; i < len(solution.Paths); i++ {
+		solutionPathRooms := solution.Paths[i].Rooms
 		for j := 0; j < len(solutionPathRooms) - 1; j++ {
 			for k := 0; k < len(path.Rooms) - 1; k++ {
 				if k != 0 && j != 0 && path.Rooms[k] == solutionPathRooms[j] {
@@ -50,16 +50,16 @@ func IsACompatiblePath(solutions e.Solution, path *e.Path) bool {
 	return true
 }
 
-func (f *Farm) LookingForEveryPossibleSolution() {
+func (f *Farm) lookingForEveryPossibleSolution() {
 	for i := range f.Paths {
-		solutions := f.InializationSolutionSlice(i)
+		solutions := f.inializationSolutionSlice(i)
 		for nbrOfPaths := 1; nbrOfPaths < f.PathsCap; nbrOfPaths++ {
 			for j := range solutions {
 				if len(solutions[j].Paths) != nbrOfPaths {
 					continue
 				}
 				for k := range f.Paths {
-					if k == i || !IsACompatiblePath(solutions[j], f.Paths[k]) {
+					if k == i || !isACompatiblePath(solutions[j], f.Paths[k]) {
 						continue
 					}
 					solutions = append(solutions, solutions[j])
@@ -73,7 +73,7 @@ func (f *Farm) LookingForEveryPossibleSolution() {
 
 // a bloc function that create a slice Of the struct Solution,
 // and initalize it's first path to the one chosen in parameter
-func (f *Farm) InializationSolutionSlice(index int) []e.Solution {
+func (f *Farm) inializationSolutionSlice(index int) []e.Solution {
 	var solutions []e.Solution
 
 	firstPath := f.Paths[index]
@@ -108,7 +108,7 @@ func	isAMatch(curSolutionPaths []*e.Path,
 	return isAMatch
 }
 
-func (f *Farm) GetRidOfCopy() {
+func (f *Farm) getRidOfCopy() {
 	var curSolutionPaths	[]*e.Path
 	var nextSolutionPaths	[]*e.Path
 
@@ -132,7 +132,7 @@ func (f *Farm) GetRidOfCopy() {
 	}
 }
 
-func (f *Farm) sortsolutions() {
+func (f *Farm) sortSolutions() {
 	for _, s := range f.Solutions {
 		s.Sort()
 		s.GetTriggers()
@@ -142,8 +142,8 @@ func (f *Farm) sortsolutions() {
 
 func (f *Farm) SortPaths() {
 	f.sortPathSize()
-	f.GetPathCap()
-	f.LookingForEveryPossibleSolution()
-	f.GetRidOfCopy()
-	f.sortsolutions()
+	f.getPathCap()
+	f.lookingForEveryPossibleSolution()
+	f.getRidOfCopy()
+	f.sortSolutions()
 }

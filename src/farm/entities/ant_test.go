@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func GetTestPath() *Path {
+func getTestPath() *Path {
 	rooms := []*Room{
 		NewRoom("a", 0, 0),
 		NewRoom("b", 0, 0),
@@ -15,7 +15,7 @@ func GetTestPath() *Path {
 }
 
 func TestBasicMoveAnt(t *testing.T) {
-	path := GetTestPath()
+	path := getTestPath()
 	rooms := path.Rooms
 	ant := NewAnt(1, path)
 	rooms[0].Ants = append(rooms[0].Ants, ant)
@@ -40,7 +40,7 @@ func TestBasicMoveAnt(t *testing.T) {
 }
 
 func TestCollisionMoveAnt(t *testing.T) {
-	path := GetTestPath()
+	path := getTestPath()
 	rooms := path.Rooms
 	ant1 := NewAnt(1, path)
 	ant2 := NewAnt(2, path)

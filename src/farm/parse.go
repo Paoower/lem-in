@@ -22,7 +22,7 @@ func (farm *Farm) parseRoom(line string) (e.Room, error) {
 
 	// Room's name
 	var name string = fields[0]
-	tools.Check(farm.CheckRoomName(name))
+	tools.Check(farm.checkRoomName(name))
 
 	// Converting the first field
 	var x int

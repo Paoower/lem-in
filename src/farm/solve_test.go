@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func CreateTestFarm() (*Farm, *e.Solution) {
+func createTestFarm() (*Farm, *e.Solution) {
 	farm := NewFarm()
 	solution := e.NewSolution()
 	rooms := []*e.Room{
@@ -22,8 +22,8 @@ func CreateTestFarm() (*Farm, *e.Solution) {
 }
 
 func TestAddNewAnts(t *testing.T) {
-	farm, solution := CreateTestFarm()
-	antsAdded := farm.AddNewAnts(solution)
+	farm, solution := createTestFarm()
+	antsAdded := farm.addNewAnts(solution)
 	if (antsAdded != 2) {
 		t.Fatalf("%d ants were added, not 2.", antsAdded)
 	}
@@ -37,21 +37,21 @@ func TestAddNewAnts(t *testing.T) {
 	if (len(endRoom.Ants) != 0) {
 		t.Fatalf("ant %d should not be in end room.", endRoom.Ants[0].Id)
 	}
-	antsAdded = farm.AddNewAnts(solution)
+	antsAdded = farm.addNewAnts(solution)
 	if (antsAdded != 0) {
 		t.Fatalf("%d ants were added into full rooms.", antsAdded)
 	}
 }
 
 func TestMoveAnts(t *testing.T) {
-	farm, solution := CreateTestFarm()
-	farm.AddNewAnts(solution)
-	farm.MoveCurrentsAnts()
+	farm, solution := createTestFarm()
+	farm.addNewAnts(solution)
+	farm.moveCurrentsAnts()
 	endRoom := farm.Rooms[len(farm.Rooms) - 1]
 	if len(endRoom.Ants) != 2 {
 		t.Fatalf("%d are in end room, not 2.", len(endRoom.Ants))
 	}
-	farm.MoveCurrentsAnts()
+	farm.moveCurrentsAnts()
 	if len(endRoom.Ants) != 0 {
 		t.Fatalf("ant %d should not be in end room.", endRoom.Ants[0].Id)
 	}

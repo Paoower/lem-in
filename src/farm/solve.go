@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-func	(farm *Farm) PrintAntsPositions() {
+func	(farm *Farm) printAntsPositions() {
 	var ant			*e.Ant
 	var currentRoom	*e.Room
 	var i			int
@@ -28,7 +28,7 @@ func	(farm *Farm) PrintAntsPositions() {
 // Add awaiting ants into the circuit.
 //
 // Returns the number of ants added.
-func	(farm *Farm) AddNewAnts(solution *e.Solution) int {
+func	(farm *Farm) addNewAnts(solution *e.Solution) int {
 	var path		*e.Path
 	var ant			*e.Ant
 	var firstRoom	*e.Room
@@ -57,7 +57,7 @@ func	(farm *Farm) AddNewAnts(solution *e.Solution) int {
 	return antAdded
 }
 
-func	(farm *Farm) MoveCurrentsAnts() {
+func	(farm *Farm) moveCurrentsAnts() {
 	var i			int
 	var antStatus	e.AntStatus
 
@@ -75,16 +75,16 @@ func	(farm *Farm) MoveCurrentsAnts() {
 	}
 }
 
-func	(farm *Farm) LemIn() {
+func	(farm *Farm) Solve() {
 	var solution	e.Solution
 
 	for {
 		// find the solution
-		farm.MoveCurrentsAnts()
-		farm.AddNewAnts(&solution)
+		farm.moveCurrentsAnts()
+		farm.addNewAnts(&solution)
 		if len(farm.Ants) == 0 {
 			break
 		}
-		farm.PrintAntsPositions()
+		farm.printAntsPositions()
 	}
 }

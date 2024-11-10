@@ -7,7 +7,17 @@ import (
 	t "lem-in/src/tools"
 )
 
-func (f *Farm) BFS() {
+// Helper function to check if a room is in a path
+func containsRoom(route []*e.Room, room *e.Room) bool {
+	for _, r := range route {
+		if r == room {
+			return true
+		}
+	}
+	return false
+}
+
+func (f *Farm) FetchPaths() {
 	// Initializing first and last room
 	start := f.Rooms[0]
 	end := f.Rooms[len(f.Rooms)-1]
@@ -51,18 +61,7 @@ func (f *Farm) BFS() {
 	f.Paths = allPaths
 }
 
-// Helper function to check if a room is in a path
-func containsRoom(route []*e.Room, room *e.Room) bool {
-	for _, r := range route {
-		if r == room {
-			return true
-		}
-	}
-	return false
-}
-
-func (f *Farm) GetAllPaths() {
-	f.BFS()
+func (f *Farm) PrintAllPaths() {
 	if len(f.Paths) == 0 {
 		fmt.Println("No path found")
 		return

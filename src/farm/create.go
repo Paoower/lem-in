@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-// Insert room element into rooms slice
-func (farm *Farm) Insert(index int, value *e.Room) {
+// insert room element into rooms slice
+func (farm *Farm) insert(index int, value *e.Room) {
 	if len(farm.Rooms) == index {
 		farm.Rooms = append(farm.Rooms, value)
 		return
@@ -92,7 +92,7 @@ func (farm *Farm) Create(filepath string) {
 
 		// Add links
 		if strings.Contains(line, "-") {
-			if farm.CheckRoomName(line) == nil {
+			if farm.checkRoomName(line) == nil {
 				links = append(links, line)
 				continue
 			} else {
@@ -108,7 +108,7 @@ func (farm *Farm) Create(filepath string) {
 
 		// Add the room at the beginning of the slice if its the start room
 		if start {
-			farm.Insert(0, &room)
+			farm.insert(0, &room)
 			start = false
 			continue
 		}

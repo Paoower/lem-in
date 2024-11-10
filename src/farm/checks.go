@@ -35,7 +35,7 @@ func (farm Farm) isRoomThere(room e.Room) bool {
 }
 
 // Checks if a room's name is correct
-func (farm *Farm) CheckRoomName(name string) error {
+func (farm *Farm) checkRoomName(name string) error {
 	if strings.HasPrefix(name, "L") {
 		return errors.New("invalid room name")
 	}
