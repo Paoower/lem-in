@@ -74,3 +74,17 @@ func	(farm *Farm) MoveCurrentsAnts() {
 		i++
 	}
 }
+
+func	(farm *Farm) LemIn() {
+	var solution	e.Solution
+
+	for {
+		// find the solution
+		farm.MoveCurrentsAnts()
+		farm.AddNewAnts(&solution)
+		if len(farm.Ants) == 0 {
+			break
+		}
+		farm.PrintAntsPositions()
+	}
+}
