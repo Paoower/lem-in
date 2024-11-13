@@ -37,7 +37,7 @@ func (f *Farm) getPathCap() {
 	f.PathsCap = start
 }
 
-func IsACompatiblePath(solutionSlice objects.Solution, path *objects.Path) bool {
+func IsACompatiblePath(solutionSlice *objects.Solution, path *objects.Path) bool {
 	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
 		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms)-1; indexRoomInSolutionPath++ {
 			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms)-1; indexRoomInArgPath++ {
@@ -57,11 +57,9 @@ func (f *Farm) lookingForEveryPossibleSolution() {
 			for indexSolution := range solutionSlice {
 				if len(solutionSlice[indexSolution].Paths) == nbrOfPaths {
 					for otherPath := range f.Paths {
-						if otherPath != indexPath {
-							if IsACompatiblePath(solutionSlice[indexSolution], f.Paths[otherPath]) {
-								solutionSlice = append(solutionSlice, solutionSlice[indexSolution])
-								solutionSlice[indexSolution].Paths = append(solutionSlice[indexSolution].Paths, f.Paths[otherPath])
-							}
+						if otherPath != indexPath && IsACompatiblePath(solutionSlice[indexSolution], f.Paths[otherPath]) {
+							solutionSlice = append(solutionSlice, solutionSlice[indexSolution])
+							solutionSlice[indexSolution].Paths = append(solutionSlice[indexSolution].Paths, f.Paths[otherPath])
 						}
 					}
 				}
@@ -72,8 +70,8 @@ func (f *Farm) lookingForEveryPossibleSolution() {
 }
 
 // a bloc function that create a slice Of the struct Solution, and initalize it's first path to the one chosen in parameter
-func (f *Farm) InializationSolutionSlice(index int) []objects.Solution {
-	var solutionSlice []objects.Solution
+func (f *Farm) InializationSolutionSlice(index int) []*objects.Solution {
+	var solutionSlice []*objects.Solution
 	firstPath := f.Paths[index]
 	firstSolution := objects.NewSolution()
 	firstSolution.Paths = append(firstSolution.Paths, firstPath)
@@ -119,7 +117,38 @@ func (f *Farm) sortSolutions() {
 	for _, s := range f.Solutions {
 		s.Sort()
 		s.GetTriggers()
-		fmt.Println(s)
+	}
+}
+
+func (f *Farm) keepingBestSolutions() {
+	var bestSolutions []*objects.Solution
+	for nbrOfPath := 1; nbrOfPath <= f.PathsCap; nbrOfPath++ {
+		for indexSolution := range f.Solutions {
+			sizeBS := len(bestSolutions)
+			nbrPathInThisSolution := len(f.Solutions[indexSolution].Paths)
+			if sizeBS >= nbrPathInThisSolution {
+				index := nbrPathInThisSolution - 1
+				if nbrPathInThisSolution == 1 {
+					if bestSolutions[0].Paths[0].Cost > f.Solutions[indexSolution].Paths[0].Cost {
+						bestSolutions[0] = f.Solutions[indexSolution]
+					}
+				} else if bestSolutions[index].PathsTrigger[index-1] > f.Solutions[indexSolution].PathsTrigger[index-1] {
+					bestSolutions[index] = f.Solutions[indexSolution]
+				}
+			} else if sizeBS == (nbrPathInThisSolution - 1) {
+				bestSolutions = append(bestSolutions, f.Solutions[indexSolution])
+			}
+		}
+	}
+	f.Solutions = bestSolutions
+}
+
+func (f *Farm) ShowSolutions() {
+	for s := range f.Solutions {
+		fmt.Println(f.Solutions[s].Paths)
+		for p := range f.Solutions[s].Paths {
+			f.Solutions[s].Paths[p].Print()
+		}
 	}
 }
 
@@ -129,4 +158,6 @@ func (f *Farm) SortPaths() {
 	f.lookingForEveryPossibleSolution()
 	f.getRidOfCopy()
 	f.sortSolutions()
+	f.keepingBestSolutions()
+	//f.ShowSolutions()
 }

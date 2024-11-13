@@ -73,13 +73,22 @@ func (farm *Farm) moveCurrentsAnts() {
 	}
 }
 
+func (farm *Farm) selectSolution() *objects.Solution {
+	for i := len(farm.Solutions) - 1; i > 0; i-- {
+		if farm.Solutions[i].PathsTrigger[i-1] <= (farm.TotalAnts - farm.AntNb) {
+			return farm.Solutions[i]
+		}
+	}
+	return farm.Solutions[0]
+}
+
 func (farm *Farm) Solve() {
-	var solution objects.Solution
+	var solution *objects.Solution
 
 	for {
-		// find the solution
+		solution = farm.selectSolution()
 		farm.moveCurrentsAnts()
-		farm.addNewAnts(&solution)
+		farm.addNewAnts(solution)
 		if len(farm.Ants) == 0 {
 			break
 		}

@@ -11,7 +11,7 @@ const (
 
 type Ant struct {
 	Id        int
-	Path      *Path // do not include start and end
+	Path      *Path // do not include start
 	IndexRoom int
 }
 

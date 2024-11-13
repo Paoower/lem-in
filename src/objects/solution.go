@@ -9,8 +9,8 @@ type Solution struct {
 }
 
 // Constructor
-func NewSolution() Solution {
-	return Solution{
+func NewSolution() *Solution {
+	return &Solution{
 		Paths:        []*Path{},
 		PathsTrigger: []int{},
 	}
