@@ -19,7 +19,7 @@ func NewAnt(id int, path *Path) *Ant {
 	return &Ant{
 		Id:        id,
 		Path:      path,
-		IndexRoom: 0,
+		IndexRoom: 1,
 	}
 }
 
