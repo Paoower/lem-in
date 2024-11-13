@@ -11,7 +11,7 @@ func main() {
 	tools.Check(src.ArgsValidation())
 	var f *farm.Farm = farm.NewFarm()
 	f.Create(os.Args[1])
-	f.FetchPaths()
+	f.BFS()
 	f.PrintAllPaths()
 	f.SortPaths()
 }

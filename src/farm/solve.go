@@ -6,17 +6,17 @@ import (
 	"slices"
 )
 
-func	(farm *Farm) printAntsPositions() {
-	var ant			*e.Ant
-	var currentRoom	*e.Room
-	var i			int
-	var antsLen		int
+func (farm *Farm) printAntsPositions() {
+	var ant *e.Ant
+	var currentRoom *e.Room
+	var i int
+	var antsLen int
 
 	antsLen = len(farm.Ants)
 	for i, ant = range farm.Ants {
 		currentRoom = ant.Path.Rooms[ant.IndexRoom]
 		fmt.Printf("L%d-%s", ant.Id, currentRoom.Name)
-		if i == antsLen - 1 {
+		if i == antsLen-1 {
 			// on last element
 			fmt.Print("\n")
 		} else {
@@ -28,12 +28,12 @@ func	(farm *Farm) printAntsPositions() {
 // Add awaiting ants into the circuit.
 //
 // Returns the number of ants added.
-func	(farm *Farm) addNewAnts(solution *e.Solution) int {
-	var path		*e.Path
-	var ant			*e.Ant
-	var firstRoom	*e.Room
-	var i			int
-	var antAdded	int
+func (farm *Farm) addNewAnts(solution *e.Solution) int {
+	var path *e.Path
+	var ant *e.Ant
+	var firstRoom *e.Room
+	var i int
+	var antAdded int
 
 	antAdded = 0
 	for i = 0; i < len(solution.Paths); i++ {
@@ -48,7 +48,7 @@ func	(farm *Farm) addNewAnts(solution *e.Solution) int {
 			// room already used and is not the end
 			continue
 		}
-		ant = e.NewAnt(farm.AntNb + 1, path)
+		ant = e.NewAnt(farm.AntNb+1, path)
 		farm.AntNb++
 		farm.Ants = append(farm.Ants, ant)
 		firstRoom.Ants = append(firstRoom.Ants, ant)
@@ -57,9 +57,9 @@ func	(farm *Farm) addNewAnts(solution *e.Solution) int {
 	return antAdded
 }
 
-func	(farm *Farm) moveCurrentsAnts() {
-	var i			int
-	var antStatus	e.AntStatus
+func (farm *Farm) moveCurrentsAnts() {
+	var i int
+	var antStatus e.AntStatus
 
 	i = 0
 	for i < len(farm.Ants) {
@@ -75,8 +75,8 @@ func	(farm *Farm) moveCurrentsAnts() {
 	}
 }
 
-func	(farm *Farm) Solve() {
-	var solution	e.Solution
+func (farm *Farm) Solve() {
+	var solution e.Solution
 
 	for {
 		// find the solution

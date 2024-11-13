@@ -39,8 +39,8 @@ func (f *Farm) getPathCap() {
 func isACompatiblePath(solution e.Solution, path *e.Path) bool {
 	for i := 0; i < len(solution.Paths); i++ {
 		solutionPathRooms := solution.Paths[i].Rooms
-		for j := 0; j < len(solutionPathRooms) - 1; j++ {
-			for k := 0; k < len(path.Rooms) - 1; k++ {
+		for j := 0; j < len(solutionPathRooms)-1; j++ {
+			for k := 0; k < len(path.Rooms)-1; k++ {
 				if k != 0 && j != 0 && path.Rooms[k] == solutionPathRooms[j] {
 					return false
 				}
@@ -89,9 +89,9 @@ func (f *Farm) TestCheckingForAllSolutions() {
 	}
 }
 
-func	isAMatch(curSolutionPaths []*e.Path,
-					nextSolutionPaths []*e.Path) bool {
-	var isAMatch	bool
+func isAMatch(curSolutionPaths []*e.Path,
+	nextSolutionPaths []*e.Path) bool {
+	var isAMatch bool
 
 	isAMatch = false
 	for i := range curSolutionPaths {
@@ -109,8 +109,8 @@ func	isAMatch(curSolutionPaths []*e.Path,
 }
 
 func (f *Farm) getRidOfCopy() {
-	var curSolutionPaths	[]*e.Path
-	var nextSolutionPaths	[]*e.Path
+	var curSolutionPaths []*e.Path
+	var nextSolutionPaths []*e.Path
 
 	for i := range f.Solutions {
 		for j := i + 1; j < len(f.Solutions); j++ {
@@ -119,7 +119,7 @@ func (f *Farm) getRidOfCopy() {
 			if len(curSolutionPaths) != len(nextSolutionPaths) {
 				continue
 			}
-			if (!isAMatch(curSolutionPaths, nextSolutionPaths)) {
+			if !isAMatch(curSolutionPaths, nextSolutionPaths) {
 				continue
 			}
 			if j == len(f.Solutions)-1 {

@@ -17,7 +17,7 @@ func containsRoom(route []*e.Room, room *e.Room) bool {
 	return false
 }
 
-func (f *Farm) FetchPaths() {
+func (f *Farm) BFS() {
 	// Initializing first and last room
 	start := f.Rooms[0]
 	end := f.Rooms[len(f.Rooms)-1]
