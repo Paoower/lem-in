@@ -3,12 +3,12 @@ package farm
 import (
 	"container/list"
 	"fmt"
-	e "lem-in/src/farm/entities"
-	t "lem-in/src/tools"
+	"lem-in/src/objects"
+	"lem-in/src/tools"
 )
 
 // Helper function to check if a room is in a path
-func containsRoom(route []*e.Room, room *e.Room) bool {
+func containsRoom(route []*objects.Room, room *objects.Room) bool {
 	for _, r := range route {
 		if r == room {
 			return true
@@ -23,16 +23,16 @@ func (f *Farm) BFS() {
 	end := f.Rooms[len(f.Rooms)-1]
 
 	// Store all paths and create BFS queue
-	var allPaths []*e.Path
+	var allPaths []*objects.Path
 	queue := list.New()
 
 	// Add the first path with the first room
-	firstPath := e.NewPath([]*e.Room{start})
+	firstPath := objects.NewPath([]*objects.Room{start})
 	queue.PushBack(firstPath)
 
 	for queue.Len() > 0 {
 		// Dequeue the current path
-		p := queue.Remove(queue.Front()).(*e.Path)
+		p := queue.Remove(queue.Front()).(*objects.Path)
 		currentRoom := p.Rooms[len(p.Rooms)-1]
 
 		// If we have reached the destination, store the path
@@ -49,11 +49,11 @@ func (f *Farm) BFS() {
 			}
 
 			// Create a new path by copying the current one and extending it
-			newRoute := make([]*e.Room, len(p.Rooms))
+			newRoute := make([]*objects.Room, len(p.Rooms))
 			copy(newRoute, p.Rooms)
 			newRoute = append(newRoute, linkedRoom)
 
-			newPath := e.NewPath(newRoute)
+			newPath := objects.NewPath(newRoute)
 			queue.PushBack(newPath)
 		}
 	}
@@ -70,6 +70,6 @@ func (f *Farm) PrintAllPaths() {
 		for _, r := range p.Rooms {
 			fmt.Print(r.Name, " ")
 		}
-		t.Ret()
+		tools.Ret()
 	}
 }

@@ -1,4 +1,4 @@
-package entities
+package objects
 
 type AntStatus int
 
@@ -10,15 +10,15 @@ const (
 )
 
 type Ant struct {
-	Id			int
-	Path		*Path // do not include start and end
-	IndexRoom	int
+	Id        int
+	Path      *Path // do not include start and end
+	IndexRoom int
 }
 
-func	NewAnt(id int, path *Path) *Ant {
+func NewAnt(id int, path *Path) *Ant {
 	return &Ant{
-		Id:  id,
-		Path: path,
+		Id:        id,
+		Path:      path,
 		IndexRoom: 0,
 	}
 }
@@ -38,11 +38,11 @@ func (status AntStatus) Message() string {
 	}
 }
 
-func	(ant *Ant) Move() AntStatus {
-	var newIndex	int
-	var roomsLen	int
-	var rooms		[]*Room
-	var newRoom		*Room
+func (ant *Ant) Move() AntStatus {
+	var newIndex int
+	var roomsLen int
+	var rooms []*Room
+	var newRoom *Room
 
 	rooms = ant.Path.Rooms
 	roomsLen = len(rooms)
@@ -57,7 +57,7 @@ func	(ant *Ant) Move() AntStatus {
 		return AntStatusDeleted
 	}
 	newRoom = rooms[newIndex]
-	if len(newRoom.Ants) > 0 && newIndex != roomsLen - 1 {
+	if len(newRoom.Ants) > 0 && newIndex != roomsLen-1 {
 		// room already used and is not the end
 		return AntStatusNotMoved
 	}

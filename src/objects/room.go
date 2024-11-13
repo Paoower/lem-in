@@ -1,4 +1,4 @@
-package entities
+package objects
 
 import (
 	"errors"
@@ -8,11 +8,11 @@ import (
 
 // Room datatype
 type Room struct {
-	Name     string
-	X        int
-	Y        int
-	Ants     []*Ant
-	Links    []*Room
+	Name  string
+	X     int
+	Y     int
+	Ants  []*Ant
+	Links []*Room
 }
 
 // Checks if a room is reachable
@@ -35,10 +35,10 @@ func (room Room) DisplayRoom() {
 // Room constructor
 func NewRoom(name string, x int, y int) *Room {
 	return &Room{
-		Name:     name,
-		X:        x,
-		Y:        y,
-		Ants:     []*Ant{},
-		Links:    []*Room{},
+		Name:  name,
+		X:     x,
+		Y:     y,
+		Ants:  []*Ant{},
+		Links: []*Room{},
 	}
 }

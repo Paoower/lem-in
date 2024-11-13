@@ -2,7 +2,7 @@ package farm
 
 import (
 	"fmt"
-	e "lem-in/src/farm/entities"
+	"lem-in/src/objects"
 	"slices"
 	"sort"
 )
@@ -15,33 +15,33 @@ func (f *Farm) sortPathSize() {
 }
 
 func (f *Farm) getPathCap() {
-	var startingRoomsNames []string
-	var endingRoomsNames []string
+	var sliceOfStartingRoomsName []string
+	var sliceOfEndingRoomsName []string
 
 	for i := 0; i < len(f.Paths); i++ {
 		tempName := f.Paths[i].Rooms[1].Name
-		if !slices.Contains(startingRoomsNames, tempName) {
-			startingRoomsNames = append(startingRoomsNames, tempName)
+		if !slices.Contains(sliceOfStartingRoomsName, tempName) {
+			sliceOfStartingRoomsName = append(sliceOfStartingRoomsName, tempName)
 		}
 		tempName = f.Paths[i].Rooms[len(f.Paths[i].Rooms)-2].Name
-		if !slices.Contains(endingRoomsNames, tempName) {
-			endingRoomsNames = append(endingRoomsNames, tempName)
+		if !slices.Contains(sliceOfEndingRoomsName, tempName) {
+			sliceOfEndingRoomsName = append(sliceOfEndingRoomsName, tempName)
 		}
 	}
-	start := len(startingRoomsNames)
-	end := len(endingRoomsNames)
+
+	start := len(sliceOfStartingRoomsName)
+	end := len(sliceOfEndingRoomsName)
 	if end > start {
 		f.PathsCap = end
 	}
 	f.PathsCap = start
 }
 
-func isACompatiblePath(solution e.Solution, path *e.Path) bool {
-	for i := 0; i < len(solution.Paths); i++ {
-		solutionPathRooms := solution.Paths[i].Rooms
-		for j := 0; j < len(solutionPathRooms)-1; j++ {
-			for k := 0; k < len(path.Rooms)-1; k++ {
-				if k != 0 && j != 0 && path.Rooms[k] == solutionPathRooms[j] {
+func IsACompatiblePath(solutionSlice objects.Solution, path *objects.Path) bool {
+	for indexPathInSolution := 0; indexPathInSolution < len(solutionSlice.Paths); indexPathInSolution++ {
+		for indexRoomInSolutionPath := 0; indexRoomInSolutionPath < len(solutionSlice.Paths[indexPathInSolution].Rooms)-1; indexRoomInSolutionPath++ {
+			for indexRoomInArgPath := 0; indexRoomInArgPath < len(path.Rooms)-1; indexRoomInArgPath++ {
+				if indexRoomInArgPath != 0 && indexRoomInSolutionPath != 0 && path.Rooms[indexRoomInArgPath] == solutionSlice.Paths[indexPathInSolution].Rooms[indexRoomInSolutionPath] {
 					return false
 				}
 			}
@@ -51,36 +51,34 @@ func isACompatiblePath(solution e.Solution, path *e.Path) bool {
 }
 
 func (f *Farm) lookingForEveryPossibleSolution() {
-	for i := range f.Paths {
-		solutions := f.inializationSolutionSlice(i)
+	for indexPath := range f.Paths {
+		solutionSlice := f.InializationSolutionSlice(indexPath)
 		for nbrOfPaths := 1; nbrOfPaths < f.PathsCap; nbrOfPaths++ {
-			for j := range solutions {
-				if len(solutions[j].Paths) != nbrOfPaths {
-					continue
-				}
-				for k := range f.Paths {
-					if k == i || !isACompatiblePath(solutions[j], f.Paths[k]) {
-						continue
+			for indexSolution := range solutionSlice {
+				if len(solutionSlice[indexSolution].Paths) == nbrOfPaths {
+					for otherPath := range f.Paths {
+						if otherPath != indexPath {
+							if IsACompatiblePath(solutionSlice[indexSolution], f.Paths[otherPath]) {
+								solutionSlice = append(solutionSlice, solutionSlice[indexSolution])
+								solutionSlice[indexSolution].Paths = append(solutionSlice[indexSolution].Paths, f.Paths[otherPath])
+							}
+						}
 					}
-					solutions = append(solutions, solutions[j])
-					solutions[j].Paths = append(solutions[j].Paths, f.Paths[k])
 				}
 			}
 		}
-		f.Solutions = append(f.Solutions, solutions...)
+		f.Solutions = append(f.Solutions, solutionSlice...)
 	}
 }
 
-// a bloc function that create a slice Of the struct Solution,
-// and initalize it's first path to the one chosen in parameter
-func (f *Farm) inializationSolutionSlice(index int) []e.Solution {
-	var solutions []e.Solution
-
+// a bloc function that create a slice Of the struct Solution, and initalize it's first path to the one chosen in parameter
+func (f *Farm) InializationSolutionSlice(index int) []objects.Solution {
+	var solutionSlice []objects.Solution
 	firstPath := f.Paths[index]
-	firstSolution := e.NewSolution()
+	firstSolution := objects.NewSolution()
 	firstSolution.Paths = append(firstSolution.Paths, firstPath)
-	solutions = append(solutions, firstSolution)
-	return solutions
+	solutionSlice = append(solutionSlice, firstSolution)
+	return solutionSlice
 }
 
 func (f *Farm) TestCheckingForAllSolutions() {
@@ -89,44 +87,29 @@ func (f *Farm) TestCheckingForAllSolutions() {
 	}
 }
 
-func isAMatch(curSolutionPaths []*e.Path,
-	nextSolutionPaths []*e.Path) bool {
-	var isAMatch bool
-
-	isAMatch = false
-	for i := range curSolutionPaths {
-		if !isAMatch && i != 0 {
-			continue
-		}
-		isAMatch = false
-		for j := range nextSolutionPaths {
-			if curSolutionPaths[i] == nextSolutionPaths[j] {
-				isAMatch = true
-			}
-		}
-	}
-	return isAMatch
-}
-
 func (f *Farm) getRidOfCopy() {
-	var curSolutionPaths []*e.Path
-	var nextSolutionPaths []*e.Path
-
-	for i := range f.Solutions {
-		for j := i + 1; j < len(f.Solutions); j++ {
-			curSolutionPaths = f.Solutions[i].Paths
-			nextSolutionPaths = f.Solutions[j].Paths
-			if len(curSolutionPaths) != len(nextSolutionPaths) {
-				continue
-			}
-			if !isAMatch(curSolutionPaths, nextSolutionPaths) {
-				continue
-			}
-			if j == len(f.Solutions)-1 {
-				f.Solutions = f.Solutions[:j]
-			} else {
-				f.Solutions = append(f.Solutions[:j], f.Solutions[j+1:]...)
-				j--
+	for indexFirstSolution := range f.Solutions {
+		for indexSecondSolution := indexFirstSolution + 1; indexSecondSolution < len(f.Solutions); indexSecondSolution++ {
+			if len(f.Solutions[indexFirstSolution].Paths) == len(f.Solutions[indexSecondSolution].Paths) {
+				isaMatch := false
+				for indexPathInFirstSolution := range f.Solutions[indexFirstSolution].Paths {
+					if isaMatch || indexPathInFirstSolution == 0 {
+						isaMatch = false
+						for indexPathInSecondSolution := range f.Solutions[indexSecondSolution].Paths {
+							if f.Solutions[indexFirstSolution].Paths[indexPathInFirstSolution] == f.Solutions[indexSecondSolution].Paths[indexPathInSecondSolution] {
+								isaMatch = true
+							}
+						}
+					}
+				}
+				if isaMatch {
+					if indexSecondSolution == len(f.Solutions)-1 {
+						f.Solutions = f.Solutions[:indexSecondSolution]
+					} else {
+						f.Solutions = append(f.Solutions[:indexSecondSolution], f.Solutions[indexSecondSolution+1:]...)
+						indexSecondSolution--
+					}
+				}
 			}
 		}
 	}

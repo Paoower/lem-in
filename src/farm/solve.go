@@ -2,17 +2,16 @@ package farm
 
 import (
 	"fmt"
-	e "lem-in/src/farm/entities"
+	"lem-in/src/objects"
 	"slices"
 )
 
 func (farm *Farm) printAntsPositions() {
-	var ant *e.Ant
-	var currentRoom *e.Room
+	var ant *objects.Ant
+	var currentRoom *objects.Room
 	var i int
-	var antsLen int
+	var antsLen int = len(farm.Ants)
 
-	antsLen = len(farm.Ants)
 	for i, ant = range farm.Ants {
 		currentRoom = ant.Path.Rooms[ant.IndexRoom]
 		fmt.Printf("L%d-%s", ant.Id, currentRoom.Name)
@@ -28,14 +27,13 @@ func (farm *Farm) printAntsPositions() {
 // Add awaiting ants into the circuit.
 //
 // Returns the number of ants added.
-func (farm *Farm) addNewAnts(solution *e.Solution) int {
-	var path *e.Path
-	var ant *e.Ant
-	var firstRoom *e.Room
+func (farm *Farm) addNewAnts(solution *objects.Solution) int {
+	var path *objects.Path
+	var ant *objects.Ant
+	var firstRoom *objects.Room
 	var i int
-	var antAdded int
+	var antAdded int = 0
 
-	antAdded = 0
 	for i = 0; i < len(solution.Paths); i++ {
 		path = solution.Paths[i]
 		if farm.AntNb == farm.TotalAnts {
@@ -48,7 +46,7 @@ func (farm *Farm) addNewAnts(solution *e.Solution) int {
 			// room already used and is not the end
 			continue
 		}
-		ant = e.NewAnt(farm.AntNb+1, path)
+		ant = objects.NewAnt(farm.AntNb+1, path)
 		farm.AntNb++
 		farm.Ants = append(farm.Ants, ant)
 		firstRoom.Ants = append(firstRoom.Ants, ant)
@@ -59,15 +57,15 @@ func (farm *Farm) addNewAnts(solution *e.Solution) int {
 
 func (farm *Farm) moveCurrentsAnts() {
 	var i int
-	var antStatus e.AntStatus
+	var antStatus objects.AntStatus
 
 	i = 0
 	for i < len(farm.Ants) {
 		antStatus = farm.Ants[i].Move()
-		if antStatus == e.AntStatusNotValid {
+		if antStatus == objects.AntStatusNotValid {
 			panic(fmt.Sprintf("Error: Ant %d not valid", farm.Ants[i].Id))
 		}
-		if antStatus == e.AntStatusDeleted {
+		if antStatus == objects.AntStatusDeleted {
 			farm.Ants = slices.Delete(farm.Ants, i, i+1)
 			continue
 		}
@@ -76,7 +74,7 @@ func (farm *Farm) moveCurrentsAnts() {
 }
 
 func (farm *Farm) Solve() {
-	var solution e.Solution
+	var solution objects.Solution
 
 	for {
 		// find the solution
