@@ -25,11 +25,14 @@ func (s *Solution) Sort() {
 }
 
 func (s *Solution) GetTriggers() {
-	var previousPathsCosts int = len(s.Paths[0].Rooms)
 	for i := 1; i < len(s.Paths); i++ {
-		var trigger int = (len(s.Paths[i].Rooms)+1)*i + 2 - previousPathsCosts
+		var trigger int = (i * (len(s.Paths[i].Rooms) - len(s.Paths[i-1].Rooms))) + 1
+		if i == 1 {
+			trigger++
+		} else {
+			trigger += s.PathsTrigger[i-2]
+		}
 		s.PathsTrigger = append(s.PathsTrigger, trigger)
-		previousPathsCosts += len(s.Paths[i].Rooms)
 	}
 }
 

@@ -191,5 +191,5 @@ func (f *Farm) SortPaths() {
 	f.getRidOfCopy()
 	f.sortSolutions()
 	f.keepingBestSolutions()
-	//f.ShowSolutions()
+	f.ShowSolutions()
 }
