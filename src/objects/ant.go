@@ -11,7 +11,7 @@ const (
 
 type Ant struct {
 	Id        int
-	Path      *Path // do not include start
+	Path      *Path
 	IndexRoom int
 }
 
@@ -63,7 +63,6 @@ func (ant *Ant) Move() AntStatus {
 	}
 	rooms[ant.IndexRoom].Ants = []*Ant{}
 	newRoom.Ants = append(newRoom.Ants, ant)
-	// fmt.Println(len(newRoom.Ants))
 	ant.IndexRoom = newIndex
 	return AntStatusMoved
 }
