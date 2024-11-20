@@ -14,5 +14,5 @@ func main() {
 	f.BFS()
 	f.PrintAllPaths()
 	f.SortPaths()
-	f.Solve()
+	f.VisualSolve() // Replace Solve() with VisualSolve()
 }
