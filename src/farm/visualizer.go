@@ -18,10 +18,12 @@ func (f *Farm) ShowInitialState() {
 
 	// Get dimensions for visualization
 	minX, maxX, minY, maxY := f.getDimensions()
-	width := maxX - minX + 3
-	height := maxY - minY + 3
 
-	// Initialize grid
+	spacingFactor := 3
+	width := (maxX - minX + 3) * spacingFactor
+	height := (maxY - minY + 3) * spacingFactor
+
+	// Initialize grid with more spacing
 	grid := make([][]string, height)
 	for i := range grid {
 		grid[i] = make([]string, width)
@@ -30,21 +32,21 @@ func (f *Farm) ShowInitialState() {
 		}
 	}
 
-	// Draw all paths
+	// Draw all paths with adjusted coordinates
 	for _, room := range f.Rooms {
-		x1 := room.X - minX + 1
-		y1 := room.Y - minY + 1
+		x1 := (room.X - minX + 1) * spacingFactor
+		y1 := (room.Y - minY + 1) * spacingFactor
 		for _, linkedRoom := range room.Links {
-			x2 := linkedRoom.X - minX + 1
-			y2 := linkedRoom.Y - minY + 1
+			x2 := (linkedRoom.X - minX + 1) * spacingFactor
+			y2 := (linkedRoom.Y - minY + 1) * spacingFactor
 			drawLine(grid, x1, y1, x2, y2)
 		}
 	}
 
-	// Mark rooms
+	// Mark rooms with adjusted coordinates
 	for _, room := range f.Rooms {
-		x := room.X - minX + 1
-		y := room.Y - minY + 1
+		x := (room.X - minX + 1) * spacingFactor
+		y := (room.Y - minY + 1) * spacingFactor
 
 		// Room name above coordinates
 		grid[y-1][x] = room.Name
@@ -133,8 +135,9 @@ func drawLine(grid [][]string, x1, y1, x2, y2 int) {
 // Creates a visual representation of the ant farm with current ant positions and active paths
 func (f *Farm) visualizeWithDelay() {
 	minX, maxX, minY, maxY := f.getDimensions()
-	width := maxX - minX + 3
-	height := maxY - minY + 3
+	spacingFactor := 3 // Increased spacing between rooms
+	width := (maxX - minX + 3) * spacingFactor
+	height := (maxY - minY + 3) * spacingFactor
 	grid := make([][]string, height)
 
 	for i := range grid {
@@ -159,25 +162,25 @@ func (f *Farm) visualizeWithDelay() {
 		}
 	}
 
-	// Draw only active paths
+	// Draw only active paths with adjusted coordinates
 	for _, room := range f.Rooms {
-		x1 := room.X - minX + 1
-		y1 := room.Y - minY + 1
+		x1 := (room.X - minX + 1) * spacingFactor
+		y1 := (room.Y - minY + 1) * spacingFactor
 
 		for _, linkedRoom := range room.Links {
 			pathKey := fmt.Sprintf("%s-%s", room.Name, linkedRoom.Name)
 			if activePaths[pathKey] {
-				x2 := linkedRoom.X - minX + 1
-				y2 := linkedRoom.Y - minY + 1
+				x2 := (linkedRoom.X - minX + 1) * spacingFactor
+				y2 := (linkedRoom.Y - minY + 1) * spacingFactor
 				drawLine(grid, x1, y1, x2, y2)
 			}
 		}
 	}
 
-	// Mark rooms and their contents
+	// Mark rooms and their contents with adjusted coordinates
 	for _, room := range f.Rooms {
-		x := room.X - minX + 1
-		y := room.Y - minY + 1
+		x := (room.X - minX + 1) * spacingFactor
+		y := (room.Y - minY + 1) * spacingFactor
 		grid[y-1][x] = room.Name
 
 		// Add room marker and ant IDs
