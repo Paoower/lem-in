@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"lem-in/src"
 	"lem-in/src/farm"
 	"lem-in/src/tools"
@@ -14,5 +15,7 @@ func main() {
 	f.BFS()
 	f.PrintAllPaths()
 	f.SortPaths()
-	f.VisualSolve() // Replace Solve() with VisualSolve()
+	fmt.Print("\nPress Enter to start the visualization...")
+	fmt.Scanln()
+	f.VisualSolve()
 }

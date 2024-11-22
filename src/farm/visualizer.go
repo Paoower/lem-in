@@ -2,8 +2,76 @@ package farm
 
 import (
 	"fmt"
+	"lem-in/src/objects"
+	"os"
+	"os/exec"
 	"strings"
+	"time"
 )
+
+// ShowInitialState displays the initial farm state with all paths
+func (f *Farm) ShowInitialState() {
+	clearScreen()
+	fmt.Println("\n=== Initial Ant Farm Configuration ===")
+	fmt.Printf("Number of ants: %d\n", f.TotalAnts)
+	fmt.Println("Room layout:")
+
+	// Get dimensions for visualization
+	minX, maxX, minY, maxY := f.getDimensions()
+	width := maxX - minX + 3
+	height := maxY - minY + 3
+
+	// Initialize grid
+	grid := make([][]string, height)
+	for i := range grid {
+		grid[i] = make([]string, width)
+		for j := range grid[i] {
+			grid[i][j] = "  "
+		}
+	}
+
+	// Draw all paths
+	for _, room := range f.Rooms {
+		x1 := room.X - minX + 1
+		y1 := room.Y - minY + 1
+		for _, linkedRoom := range room.Links {
+			x2 := linkedRoom.X - minX + 1
+			y2 := linkedRoom.Y - minY + 1
+			drawLine(grid, x1, y1, x2, y2)
+		}
+	}
+
+	// Mark rooms
+	for _, room := range f.Rooms {
+		x := room.X - minX + 1
+		y := room.Y - minY + 1
+
+		// Room name above coordinates
+		grid[y-1][x] = room.Name
+
+		// Special markers for start/end rooms
+		if room == f.Rooms[0] {
+			grid[y][x] = "E [] "
+		} else if room == f.Rooms[len(f.Rooms)-1] {
+			grid[y][x] = "S [] "
+		} else {
+			grid[y][x] = "[] "
+		}
+	}
+
+	for _, row := range grid {
+		fmt.Println(strings.Join(row, " "))
+	}
+
+	fmt.Println("\nMap Legend:")
+	fmt.Println("E [] = Entrance (Start)")
+	fmt.Println("S [] = Sortie/Exit (End)")
+	fmt.Println("·  = Path/Tunnel")
+	fmt.Println("[] = Empty Room")
+	fmt.Println("[L1] = Room with Ant #1")
+	fmt.Println("\nPress Enter to start ant movement simulation...")
+	fmt.Scanln()
+}
 
 // Determines the maximum dimensions for the visualization
 func (f *Farm) getDimensions() (int, int, int, int) {
@@ -28,13 +96,47 @@ func (f *Farm) getDimensions() (int, int, int, int) {
 	return minX, maxX, minY, maxY
 }
 
-// Creates a visual representation of the ant farm
-func (f *Farm) Visualize() string {
+// Clears the terminal screen
+func clearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
+
+// Function to draw a line between two points
+func drawLine(grid [][]string, x1, y1, x2, y2 int) {
+	dx := x2 - x1
+	dy := y2 - y1
+	steps := max(abs(dx), abs(dy))
+
+	if steps == 0 {
+		return
+	}
+
+	xIncrement := float64(dx) / float64(steps)
+	yIncrement := float64(dy) / float64(steps)
+
+	x := float64(x1)
+	y := float64(y1)
+
+	for i := 0; i <= steps; i++ {
+		if int(y) >= 0 && int(y) < len(grid) && int(x) >= 0 && int(x) < len(grid[0]) {
+			if grid[int(y)][int(x)] == "  " {
+				grid[int(y)][int(x)] = "· "
+			}
+		}
+		x += xIncrement
+		y += yIncrement
+	}
+}
+
+// Creates a visual representation of the ant farm with current ant positions and active paths
+func (f *Farm) visualizeWithDelay() {
 	minX, maxX, minY, maxY := f.getDimensions()
 	width := maxX - minX + 3
 	height := maxY - minY + 3
-
 	grid := make([][]string, height)
+
 	for i := range grid {
 		grid[i] = make([]string, width)
 		for j := range grid[i] {
@@ -42,37 +144,110 @@ func (f *Farm) Visualize() string {
 		}
 	}
 
-	// Mark rooms and their names
+	// Create a map to track active paths
+	activePaths := make(map[string]bool)
+
+	// Find active paths based on ant positions
+	for _, ant := range f.Ants {
+		if ant.IndexRoom < len(ant.Path.Rooms)-1 {
+			currentRoom := ant.Path.Rooms[ant.IndexRoom]
+			nextRoom := ant.Path.Rooms[ant.IndexRoom+1]
+			pathKey := fmt.Sprintf("%s-%s", currentRoom.Name, nextRoom.Name)
+			activePaths[pathKey] = true
+			reversePathKey := fmt.Sprintf("%s-%s", nextRoom.Name, currentRoom.Name)
+			activePaths[reversePathKey] = true
+		}
+	}
+
+	// Draw only active paths
+	for _, room := range f.Rooms {
+		x1 := room.X - minX + 1
+		y1 := room.Y - minY + 1
+
+		for _, linkedRoom := range room.Links {
+			pathKey := fmt.Sprintf("%s-%s", room.Name, linkedRoom.Name)
+			if activePaths[pathKey] {
+				x2 := linkedRoom.X - minX + 1
+				y2 := linkedRoom.Y - minY + 1
+				drawLine(grid, x1, y1, x2, y2)
+			}
+		}
+	}
+
+	// Mark rooms and their contents
 	for _, room := range f.Rooms {
 		x := room.X - minX + 1
 		y := room.Y - minY + 1
+		grid[y-1][x] = room.Name
 
-		roomMarker := "[ ]"
+		// Add room marker and ant IDs
+		var roomContent strings.Builder
+
+		// Add start/end markers
 		if room == f.Rooms[0] {
-			roomMarker = "[S]" // Start room
+			roomContent.WriteString("E ")
 		} else if room == f.Rooms[len(f.Rooms)-1] {
-			roomMarker = "[E]" // End room
+			roomContent.WriteString("S ")
 		}
 
-		// Room name above its coordinates
-		grid[y-1][x] = room.Name
-		grid[y][x] = roomMarker
+		if len(room.Ants) > 0 {
+			antIDs := make([]string, 0)
+			for _, ant := range room.Ants {
+				antIDs = append(antIDs, fmt.Sprintf("L%d", ant.Id))
+			}
+			roomContent.WriteString(fmt.Sprintf("[%s]", strings.Join(antIDs, ",")))
+		} else {
+			roomContent.WriteString("[]")
+		}
+
+		grid[y][x] = roomContent.String()
 	}
 
 	// Render the visualization
 	var visualization strings.Builder
-	visualization.WriteString("Ant Farm Visualization:\n")
+	visualization.WriteString("\n=== Ant Movement Visualization ===\n\n")
 	for _, row := range grid {
 		visualization.WriteString(strings.Join(row, " ") + "\n")
 	}
 
-	return visualization.String()
+	clearScreen()
+	fmt.Print(visualization.String())
 }
 
-// Adds ant visualization to the existing Solve method
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
 func (f *Farm) VisualSolve() {
-	// Print initial farm layout
-	fmt.Println(f.Visualize())
-	fmt.Println("Ant Movements:")
-	f.Solve()
+	f.ShowInitialState()
+
+	var solution *objects.Solution
+	cpt := 0
+
+	for {
+		solution = f.selectSolution()
+		f.moveCurrentsAnts()
+		f.addNewAnts(solution)
+		if len(f.Ants) == 0 {
+			break
+		}
+		cpt++
+		clearScreen()
+		fmt.Printf("\nMove #%d:\n", cpt)
+		f.printAntsPositions()
+		f.visualizeWithDelay()
+		time.Sleep(500 * time.Millisecond)
+	}
+
+	fmt.Printf("\nVisualization Complete!\nTotal Moves: %d\n", cpt)
 }
