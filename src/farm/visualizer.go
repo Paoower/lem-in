@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var delay = (1500 * time.Millisecond)
+
 // ShowInitialState displays the initial farm state with all paths
 func (f *Farm) ShowInitialState() {
 	clearScreen()
@@ -135,7 +137,7 @@ func drawLine(grid [][]string, x1, y1, x2, y2 int) {
 // Creates a visual representation of the ant farm with current ant positions and active paths
 func (f *Farm) visualizeWithDelay() {
 	minX, maxX, minY, maxY := f.getDimensions()
-	spacingFactor := 3 // Increased spacing between rooms
+	spacingFactor := 1 // Increased spacing between rooms
 	width := (maxX - minX + 3) * spacingFactor
 	height := (maxY - minY + 3) * spacingFactor
 	grid := make([][]string, height)
@@ -249,7 +251,7 @@ func (f *Farm) VisualSolve() {
 		fmt.Printf("\nMove #%d:\n", cpt)
 		f.printAntsPositions()
 		f.visualizeWithDelay()
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(delay)
 	}
 
 	fmt.Printf("\nVisualization Complete!\nTotal Moves: %d\n", cpt)
