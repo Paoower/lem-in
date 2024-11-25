@@ -10,6 +10,7 @@ import (
 )
 
 var delay = (1500 * time.Millisecond)
+var spacingFactor = 3
 
 // ShowInitialState displays the initial farm state with all paths
 func (f *Farm) ShowInitialState() {
@@ -21,7 +22,6 @@ func (f *Farm) ShowInitialState() {
 	// Get dimensions for visualization
 	minX, maxX, minY, maxY := f.getDimensions()
 
-	spacingFactor := 3
 	width := (maxX - minX + 3) * spacingFactor
 	height := (maxY - minY + 3) * spacingFactor
 
@@ -55,9 +55,19 @@ func (f *Farm) ShowInitialState() {
 
 		// Special markers for start/end rooms
 		if room == f.Rooms[0] {
-			grid[y][x] = "E [] "
+			xEnd := (f.Rooms[len(f.Rooms)-1].X - minX + 1) * spacingFactor
+			if x > xEnd {
+				grid[y][x] = " [] E"
+			} else {
+				grid[y][x] = "E [] "
+			}
 		} else if room == f.Rooms[len(f.Rooms)-1] {
-			grid[y][x] = "S [] "
+			xStart := (f.Rooms[0].X - minX + 1) * spacingFactor
+			if x < xStart {
+				grid[y][x] = "S [] "
+			} else {
+				grid[y][x] = " [] S"
+			}
 		} else {
 			grid[y][x] = "[] "
 		}
@@ -137,7 +147,6 @@ func drawLine(grid [][]string, x1, y1, x2, y2 int) {
 // Creates a visual representation of the ant farm with current ant positions and active paths
 func (f *Farm) visualizeWithDelay() {
 	minX, maxX, minY, maxY := f.getDimensions()
-	spacingFactor := 1 // Increased spacing between rooms
 	width := (maxX - minX + 3) * spacingFactor
 	height := (maxY - minY + 3) * spacingFactor
 	grid := make([][]string, height)
