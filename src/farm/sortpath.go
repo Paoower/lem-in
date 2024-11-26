@@ -124,29 +124,6 @@ func (f *Farm) sortSolutions() {
 	}
 }
 
-/*func (f *Farm) keepingBestSolutions() {
-	var bestSolutions []*objects.Solution
-	for nbrOfPath := 1; nbrOfPath <= f.PathsCap; nbrOfPath++ {
-		for indexSolution := range f.Solutions {
-			sizeBS := len(bestSolutions)
-			nbrPathInThisSolution := len(f.Solutions[indexSolution].Paths)
-			if sizeBS >= nbrPathInThisSolution {
-				index := nbrPathInThisSolution - 1
-				if nbrPathInThisSolution == 1 {
-					if bestSolutions[0].Paths[0].Cost > f.Solutions[indexSolution].Paths[0].Cost {
-						bestSolutions[0] = f.Solutions[indexSolution]
-					}
-				} else if bestSolutions[index].PathsTrigger[index-1] > f.Solutions[indexSolution].PathsTrigger[index-1] {
-					bestSolutions[index] = f.Solutions[indexSolution]
-				}
-			} else if sizeBS == (nbrPathInThisSolution - 1) {
-				bestSolutions = append(bestSolutions, f.Solutions[indexSolution])
-			}
-		}
-	}
-	f.Solutions = bestSolutions
-}*/
-
 func (f *Farm) keepingBestSolutions() {
 	var bestSolutions []*objects.Solution
 	for nbrOfPath := 1; nbrOfPath <= f.PathsCap; nbrOfPath++ {
@@ -191,5 +168,4 @@ func (f *Farm) SortPaths() {
 	f.getRidOfCopy()
 	f.sortSolutions()
 	f.keepingBestSolutions()
-	f.ShowSolutions()
 }

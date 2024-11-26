@@ -13,7 +13,7 @@ func main() {
 	var f *farm.Farm = farm.NewFarm()
 	f.Create(os.Args[1])
 	f.BFS()
-	f.PrintAllPaths()
+	//f.PrintAllPaths()
 	f.SortPaths()
 	fmt.Print("\nPress Enter to start the visualization...")
 	fmt.Scanln()

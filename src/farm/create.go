@@ -74,7 +74,7 @@ func (farm *Farm) Create(filepath string) {
 
 		// Check for start room
 		if strings.HasPrefix(line, "##sta") {
-			t.Debug("Found start room")
+			//t.Debug("Found start room")
 			start = true
 			continue
 		}

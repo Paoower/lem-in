@@ -173,7 +173,7 @@ func (f *Farm) visualizeWithDelay(newAntsCount int) {
 		}
 	}
 
-	if newAntsCount >= 0 {
+	if newAntsCount >= 0 && f.AntNb != f.TotalAnts {
 		solution := f.selectSolution()
 		startRoom := f.Rooms[0]
 		startX := (startRoom.X - minX + 1) * spacingFactor
