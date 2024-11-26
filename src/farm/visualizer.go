@@ -9,8 +9,19 @@ import (
 	"time"
 )
 
-var delay = (1500 * time.Millisecond)
+var defaultDelay = (1500 * time.Millisecond)
+var delay = defaultDelay
 var spacingFactor = 3
+
+// SetDelay allows the user to customize the visualization delay
+func (f *Farm) SetDelay(customDelay time.Duration) {
+	if customDelay > 0 {
+		delay = customDelay
+	} else {
+		delay = defaultDelay
+	}
+	fmt.Printf("Visualization delay set to %v\n", delay)
+}
 
 // ShowInitialState displays the initial farm state with all paths
 func (f *Farm) ShowInitialState() {
@@ -83,8 +94,6 @@ func (f *Farm) ShowInitialState() {
 	fmt.Println("·  = Path/Tunnel")
 	fmt.Println("[] = Empty Room")
 	fmt.Println("[L1] = Room with Ant #1")
-	fmt.Println("\nPress Enter to start ant movement simulation...")
-	fmt.Scanln()
 }
 
 // Determines the maximum dimensions for the visualization
@@ -260,6 +269,28 @@ func abs(x int) int {
 
 func (f *Farm) VisualSolve() {
 	f.ShowInitialState()
+
+	// Prompt user for custom delay
+	fmt.Printf(`
+Current delay is %v milliseconds.
+
+Options:
+- Press Enter to keep current delay and start simulation
+- Enter a new delay value in milliseconds and press Enter to start simulation
+
+> `, delay)
+	var userInput string
+	fmt.Scanln(&userInput)
+
+	if userInput != "" {
+		var customDelayMs int
+		_, err := fmt.Sscanf(userInput, "%d", &customDelayMs)
+		if err == nil && customDelayMs > 0 {
+			f.SetDelay(time.Duration(customDelayMs) * time.Millisecond)
+		} else {
+			fmt.Println("Invalid input. Keeping current delay.")
+		}
+	}
 
 	var solution *objects.Solution
 	cpt := 0
