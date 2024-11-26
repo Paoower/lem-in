@@ -57,16 +57,16 @@ func (f *Farm) ShowInitialState() {
 		if room == f.Rooms[0] {
 			xEnd := (f.Rooms[len(f.Rooms)-1].X - minX + 1) * spacingFactor
 			if x > xEnd {
-				grid[y][x] = " [] E"
+				grid[y][x] = " [] S"
 			} else {
-				grid[y][x] = "E [] "
+				grid[y][x] = "S [] "
 			}
 		} else if room == f.Rooms[len(f.Rooms)-1] {
 			xStart := (f.Rooms[0].X - minX + 1) * spacingFactor
 			if x < xStart {
-				grid[y][x] = "S [] "
+				grid[y][x] = "E [] "
 			} else {
-				grid[y][x] = " [] S"
+				grid[y][x] = " [] E"
 			}
 		} else {
 			grid[y][x] = "[] "
@@ -78,8 +78,8 @@ func (f *Farm) ShowInitialState() {
 	}
 
 	fmt.Println("\nMap Legend:")
-	fmt.Println("E [] = Entrance (Start)")
-	fmt.Println("S [] = Sortie/Exit (End)")
+	fmt.Println("S [] = Start")
+	fmt.Println("E [] = End")
 	fmt.Println("·  = Path/Tunnel")
 	fmt.Println("[] = Empty Room")
 	fmt.Println("[L1] = Room with Ant #1")
@@ -215,9 +215,9 @@ func (f *Farm) visualizeWithDelay(newAntsCount int) {
 
 		// Add start/end markers
 		if room == f.Rooms[0] {
-			roomContent.WriteString("E ")
-		} else if room == f.Rooms[len(f.Rooms)-1] {
 			roomContent.WriteString("S ")
+		} else if room == f.Rooms[len(f.Rooms)-1] {
+			roomContent.WriteString("E ")
 		}
 
 		if len(room.Ants) > 0 {
