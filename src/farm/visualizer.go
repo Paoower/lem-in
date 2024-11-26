@@ -145,7 +145,7 @@ func drawLine(grid [][]string, x1, y1, x2, y2 int) {
 }
 
 // Creates a visual representation of the ant farm with current ant positions and active paths
-func (f *Farm) visualizeWithDelay() {
+func (f *Farm) visualizeWithDelay(newAntsCount int) {
 	minX, maxX, minY, maxY := f.getDimensions()
 	width := (maxX - minX + 3) * spacingFactor
 	height := (maxY - minY + 3) * spacingFactor
@@ -170,6 +170,22 @@ func (f *Farm) visualizeWithDelay() {
 			activePaths[pathKey] = true
 			reversePathKey := fmt.Sprintf("%s-%s", nextRoom.Name, currentRoom.Name)
 			activePaths[reversePathKey] = true
+		}
+	}
+
+	if newAntsCount >= 0 {
+		solution := f.selectSolution()
+		startRoom := f.Rooms[0]
+		startX := (startRoom.X - minX + 1) * spacingFactor
+		startY := (startRoom.Y - minY + 1) * spacingFactor
+
+		for _, path := range solution.Paths {
+			if len(path.Rooms) > 1 {
+				firstRoom := path.Rooms[1] // First room after the E
+				x2 := (firstRoom.X - minX + 1) * spacingFactor
+				y2 := (firstRoom.Y - minY + 1) * spacingFactor
+				drawLine(grid, startX, startY, x2, y2)
+			}
 		}
 	}
 
@@ -247,11 +263,16 @@ func (f *Farm) VisualSolve() {
 
 	var solution *objects.Solution
 	cpt := 0
+	newAntsCount := 0
+
+	// Premier visuel sans fourmis
+	f.visualizeWithDelay(0)
+	time.Sleep(delay)
 
 	for {
 		solution = f.selectSolution()
 		f.moveCurrentsAnts()
-		f.addNewAnts(solution)
+		newAntsCount = f.addNewAnts(solution)
 		if len(f.Ants) == 0 {
 			break
 		}
@@ -259,7 +280,7 @@ func (f *Farm) VisualSolve() {
 		clearScreen()
 		fmt.Printf("\nMove #%d:\n", cpt)
 		f.printAntsPositions()
-		f.visualizeWithDelay()
+		f.visualizeWithDelay(newAntsCount)
 		time.Sleep(delay)
 	}
 
