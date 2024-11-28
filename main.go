@@ -10,7 +10,9 @@ import (
 func main() {
 	tools.Check(src.ArgsValidation())
 	var f *farm.Farm = farm.NewFarm()
-	f.Create(os.Args[1])
+	if !f.Create(os.Args[1]) {
+		return
+	}
 	f.BFS()
 	//f.PrintAllPaths()
 	f.SortPaths()

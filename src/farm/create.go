@@ -22,7 +22,7 @@ func (farm *Farm) insert(index int, value *objects.Room) {
 }
 
 // Main function for the farm's mapping
-func (farm *Farm) Create(filepath string) {
+func (farm *Farm) Create(filepath string) bool {
 	var err error
 
 	// Slice variables
@@ -39,7 +39,9 @@ func (farm *Farm) Create(filepath string) {
 
 	// Variables to get the start and end rooms
 	var start bool = false
+	var wasAStart bool = false
 	var end bool = false
+	var wasAEnd bool = false
 	var finalRoom *objects.Room
 
 	// Scanner to read the file
@@ -76,12 +78,14 @@ func (farm *Farm) Create(filepath string) {
 		if strings.HasPrefix(line, "##sta") {
 			//t.Debug("Found start room")
 			start = true
+			wasAStart = true
 			continue
 		}
 
 		// Check for end room
 		if strings.HasPrefix(line, "##en") {
 			end = true
+			wasAEnd = true
 			continue
 		}
 
@@ -140,4 +144,5 @@ func (farm *Farm) Create(filepath string) {
 	if err = scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+	return wasAStart && wasAEnd
 }
